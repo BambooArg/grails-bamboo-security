@@ -1,6 +1,8 @@
+import ar.com.bamboo.security.services.BambooUserDetailsService
+
 class GrailsBambooSecurityGrailsPlugin {
     // the plugin version
-    def version = "0.1.0"
+    def version = "0.1.0-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.4 > *"
     // resources that are excluded from plugin packaging
@@ -42,7 +44,9 @@ Manejo de seguridad con SpringSecurity general para todas las aplicaciones de Ba
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+        userDetailsService(BambooUserDetailsService){
+            grailsApplication = ref('grailsApplication')
+        }
     }
 
     def doWithDynamicMethods = { ctx ->

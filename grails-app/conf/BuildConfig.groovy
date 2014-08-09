@@ -41,9 +41,16 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // runtime 'mysql:mysql-connector-java:5.1.27'
+
+        test "cglib:cglib-nodep:3.1"
     }
 
     plugins {
+        compile ":spring-security-core:2.0-RC4"
+        compile ":grails-bamboo-architecture:0.1.2"
+
+        runtime ":hibernate4:4.3.5.5"
+
         build(":release:3.0.1",
               ":rest-client-builder:1.0.3") {
             export = false

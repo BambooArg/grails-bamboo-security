@@ -32,15 +32,13 @@ Las clases por default para el manejo de usuarios y roles son *User*, *Role* y *
 
 Para compilar el proyecto e intalarlo localmente se debe ejecutar
 
- ```
-grails
+ ```grails
 grails maven-install 
 ```
 
 Para publicarlo se deje ejecutar
 
-```
-grails
+```grails
 grails publish-plugin --protocol=webdav
 ```
 
@@ -48,8 +46,7 @@ El repositorio default para la publicación es https://repository-orkoapp.forge.
 
 ###**Atención**
 Tener en cuenta que se tiene que tener configurado en .grails/setting.groovy
-```
-groovy
+```groovy
 grails.project.repos.cloudbees.url = "dav:https://repository-orkoapp.forge.cloudbees.com/snapshot/"
 grails.project.repos.cloudbees.username = yourUsername
 grails.project.repos.cloudbees.password = yourPass

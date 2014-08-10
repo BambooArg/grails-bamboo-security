@@ -57,3 +57,28 @@ grails.project.repos.cloudbees.password = yourPass
 
 El proyecto usa travis-ci como entorno de integración continua. https://travis-ci.org/orkonano/grails-bamboo-security.
 Se ejecutan tantos los test unitarios como integrales, corriendo la base de datos de test en memoria.
+
+
+#Cómo usarlo
+
+Luego de instalar **grails-bamboo-security**  y **spring-security-core**, **no** se debe correr el script de spring-security-core grails 
+'s2-quickstart', sino que configurar el proyecto en el archivo Conf.groovy con las siguiente configuración de spring-security
+
+
+```groovy
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'ar.com.bamboo.security.User'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'ar.com.bamboo.security.UserRole'
+grails.plugin.springsecurity.authority.className = 'ar.com.bamboo.security.Role'
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+	'/':                              ['permitAll'],
+	'/index':                         ['permitAll'],
+	'/index.gsp':                     ['permitAll'],
+	'/assets/**':                     ['permitAll'],
+	'/**/js/**':                      ['permitAll'],
+	'/**/css/**':                     ['permitAll'],
+	'/**/images/**':                  ['permitAll'],
+	'/**/favicon.ico':                ['permitAll']
+]
+```
+
+###### **Mejoras**: En el _Install.groovy ya realizar esta tarea. Está cargada en la issue #1

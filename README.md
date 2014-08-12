@@ -18,7 +18,7 @@ compile ":grails-bamboo-security:0.1.0"
 El proyecto depende de los siguientes plugins. Actualmente al agregar grails-bamboo-security al proyecto, **no** agrega al proyecto las dependencias.
 
 - spring-security-core:2.0-RC4
-- grails-bamboo-security:0.1.0
+- grails-bamboo-architecture:0.1.0
 - grails-bamboo-commons-entity:0.1.0-SNAPSHOT
 
 

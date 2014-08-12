@@ -19,6 +19,7 @@ El proyecto depende de los siguientes plugins. Actualmente al agregar grails-bam
 
 - spring-security-core:2.0-RC4
 - grails-bamboo-security:0.1.0
+- grails-bamboo-commons-entity:0.1.0-SNAPSHOT
 
 
 ## Dominio

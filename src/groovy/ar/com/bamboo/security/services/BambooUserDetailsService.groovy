@@ -15,6 +15,7 @@ class BambooUserDetailsService extends GormUserDetailsService{
     protected UserDetails createUserDetails(user, Collection<GrantedAuthority> authorities) {
         log.info("Creando BambooUserDatails para el usuario: ${user.username}")
         return new BambooUserDetails(user.username, user.password, user.enabled, !user.accountExpired,
-                !user.passwordExpired, !user.accountLocked, authorities, user.id, user.firstName, user.lastName)
+                !user.passwordExpired, !user.accountLocked, authorities, user.id, user.person.firstName ?: "",
+                user.person.lastName ?: "")
     }
 }

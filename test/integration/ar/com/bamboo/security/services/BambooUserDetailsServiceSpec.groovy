@@ -1,5 +1,6 @@
 package ar.com.bamboo.security.services
 
+import ar.com.bamboo.commonsEntity.Person
 import ar.com.bamboo.security.User
 import ar.com.bamboo.security.userDetails.BambooUserDetails
 import grails.test.spock.IntegrationSpec
@@ -13,9 +14,13 @@ class BambooUserDetailsServiceSpec extends IntegrationSpec {
 
     @Autowired
     BambooUserDetailsService bambooUserDetailsService
+    Person person
 
     def setup() {
-        new User(username: "josesito@gmail.com", password: "mypassword").save(flush: true, failOnError: true)
+        person = new Person(lastName: "pepe")
+        person.save(flush: true, failOnError: true)
+        new User(username: "josesito@gmail.com", password: "mypassword", person: person).save(flush: true,
+                failOnError: true)
     }
 
     def cleanup() {
@@ -28,6 +33,7 @@ class BambooUserDetailsServiceSpec extends IntegrationSpec {
         usuarioDetails
         usuarioDetails.id
         usuarioDetails.username == 'josesito@gmail.com'
+        usuarioDetails.fullName == person.lastName
 
         when: "busco un usuario que no existe"
         bambooUserDetailsService.loadUserByUsername("jose@gmail.com")

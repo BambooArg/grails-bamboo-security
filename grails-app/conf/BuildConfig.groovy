@@ -48,6 +48,7 @@ grails.project.dependency.resolution = {
     plugins {
         compile ":spring-security-core:2.0-RC4"
         compile ":grails-bamboo-architecture:0.1.2"
+        compile ":grails-bamboo-commons-entity:0.1.0-SNAPSHOT"
 
         runtime ":hibernate4:4.3.5.5"
 

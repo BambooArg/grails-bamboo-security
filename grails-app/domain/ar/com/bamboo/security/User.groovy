@@ -1,5 +1,6 @@
 package ar.com.bamboo.security
 
+import ar.com.bamboo.commonsEntity.Person
 import ar.com.bamboo.framework.domains.BaseEntity
 
 class User extends BaseEntity{
@@ -8,19 +9,22 @@ class User extends BaseEntity{
 
     String username
     String password
-    String firstName
-    String lastName
     boolean accountExpired
     boolean accountLocked
     boolean passwordExpired
+    boolean acceptedTermCondition
+    boolean accountVerified
+    Date termConditionDateAccept
+    Date dateAccountVerified
+    Person person
 
     static transients = ['springSecurityService']
 
     static constraints = {
         username blank: false, unique: true, email: true
         password blank: false
-        firstName blank: true, nullable: true
-        lastName blank: true, nullable: true
+        termConditionDateAccept nullable: true
+        dateAccountVerified nullable: true
     }
 
     static mapping = {
@@ -34,6 +38,8 @@ class User extends BaseEntity{
     @Override
     protected void executeMoreBeforeInsert() {
         encodePassword()
+        acceptedTermCondition = false
+        accountVerified = false
     }
 
     def beforeUpdate() {

@@ -63,7 +63,7 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
         role
         role.authority == Role.ROLE_SUPERUSER
         userService.save(user, Role.ROLE_SUPERUSER)
-        user.id == 2
+        user.id
         !user.hasErrors()
        // UserRole.exists(user.id, role.id)
 

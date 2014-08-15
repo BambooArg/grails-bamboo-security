@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Propagation
 
 class UserService extends BaseService{
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public boolean save(User userTosave, String roleToAssign = null){
         log.debug("Guardando al usuario " + userTosave?.username)
         boolean isSave = super.save(userTosave)

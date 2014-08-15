@@ -1,9 +1,11 @@
 package ar.com.bamboo.security
 
 import ar.com.bamboo.commonsEntity.Person
+import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import org.springframework.dao.DuplicateKeyException
 import spock.lang.Specification
 
 /**
@@ -15,6 +17,8 @@ class UserServiceSpec extends Specification {
 
     def setup() {
         new Role(authority: Role.ROLE_SUPERUSER).save(flush: true, failOnError: true)
+        new Role(authority: "ROLE_ROLE2").save(flush: true, failOnError: true)
+        new Role(authority: "ROLE_ROLE3").save(flush: true, failOnError: true)
     }
 
     def cleanup() {
@@ -50,7 +54,7 @@ class UserServiceSpec extends Specification {
         !user.id
     }
 
-    void "test save action witho role"() {
+    void "test save action with role"() {
         given:
         def springSecurityService = mockFor(SpringSecurityService)
         springSecurityService.demandExplicit.encodePassword(){String  password ->
@@ -80,5 +84,65 @@ class UserServiceSpec extends Specification {
         !service.save(user, Role.ROLE_SUPERUSER)
         user.hasErrors()
         !user.id
+
+        when: "Cuando regitro a un usuario con un rol que no existe"
+        user = new User(username: "bambo00o@gmail.com", password: "quedificil", person: p)
+        service.save(user, "ROLE_NO_EXISTE")
+        then: "El registro de usuario retorna false"
+        thrown(RoleNotExistException)
+    }
+
+    void "test edit action"(){
+        given:
+        def springSecurityService = mockFor(SpringSecurityService)
+        springSecurityService.demandExplicit.encodePassword(){String  password ->
+            return password
+        }
+        Person p = new Person(firstName: "Mariano")
+        User userToEdit = new User(username: "bamboo@gmail.com", password: "password", person: p)
+                .save(flush: true, failOnError: true)
+
+        when: "Cuando lo edito modificando un dato oblogatorio dejandolo sin ser obligatorio"
+        userToEdit.username = ''
+        userToEdit.password = ''
+        userToEdit.person = null
+        boolean isSave = service.save(userToEdit)
+        then: "El update del usuario retorna false"
+        !isSave
+        userToEdit.hasErrors()
+
+        when: "Cuando lo edito modificando dejando los datos obligatorios"
+        userToEdit.username = 'alberto@gmail.com'
+        userToEdit.password = 'superpassword'
+        userToEdit.person = p
+        isSave =  service.save(userToEdit)
+        then: "El update del usuario retorna true"
+        isSave
+        !userToEdit.hasErrors()
+    }
+
+    void "test agregar nuevo rol a usuario con un rol"() {
+        given:
+        def springSecurityService = mockFor(SpringSecurityService)
+        springSecurityService.demandExplicit.encodePassword(){String  password ->
+            return password
+        }
+        Person p = new Person(firstName: "Mariano")
+        User userWithRol = new User(username: "bamboo@gmail.com", password: "password", person: p)
+        service.save(userWithRol, Role.ROLE_SUPERUSER)
+
+        when: "Cuando se quiere agregar un nuevo rol a un usuario"
+        boolean success = service.save(userWithRol, "ROLE_ROLE2")
+        then: "SE agrega correctamente el rol"
+        success
+        !userWithRol.hasErrors()
+
+        when: "Cuando se quiere agregar un nuevo rol a un usuario y además modificar datos del usuario"
+        userWithRol.username = 'alberto@gmail.com'
+        success = service.save(userWithRol, "ROLE_ROLE3")
+        then: "El registro de usuario retorna false"
+        success
+        !userWithRol.hasErrors()
+
     }
 }

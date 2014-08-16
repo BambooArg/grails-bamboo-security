@@ -1,11 +1,12 @@
 package ar.com.bamboo.security
 
-import ar.com.bamboo.framework.BaseService
+import ar.com.bamboo.framework.exceptions.ValidatorException
+import ar.com.bamboo.framework.services.BaseService
 import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.transaction.Transactional
-import org.springframework.transaction.annotation.Propagation
 
 class UserService extends BaseService{
+
 
     @Transactional
     public boolean save(User userTosave, String roleToAssign = null){
@@ -16,7 +17,10 @@ class UserService extends BaseService{
             Role role = Role.where { authority == roleToAssign }.get()
             if (role){
                 log.debug("Se va a crear el rol ${role.authority} al ${userTosave?.username} ")
-                UserRole.create(userTosave, role)
+                UserRole userRole = UserRole.create(userTosave, role)
+                if (userRole.hasErrors()){
+                    throw new ValidatorException(errors: userRole.errors)
+                }
                 log.info("Se creó el role ${role.authority} al usuario ${userTosave?.username}")
             }else{
                 throw new RoleNotExistException("No existe el rol " + roleToAssign)

@@ -1,8 +1,10 @@
 package ar.com.bamboo.security
 
+import ar.com.bamboo.commonsEntity.Person
 import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.security.exception.RoleNotExistException
+import grails.gorm.DetachedCriteria
 import grails.transaction.Transactional
 
 class UserService extends BaseService{
@@ -28,6 +30,12 @@ class UserService extends BaseService{
             }
         }
         return isSave
+    }
+
+    @Transactional(readOnly = true)
+    List<Object> list(Map params) {
+        def where = { enabled == true } as DetachedCriteria<User>
+        return this.listWithLimit(User.class, where, params)
     }
 
 }

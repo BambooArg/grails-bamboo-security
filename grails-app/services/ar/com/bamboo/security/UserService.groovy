@@ -1,7 +1,7 @@
 package ar.com.bamboo.security
 
+import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
-import ar.com.bamboo.framework.services.BaseService
 import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.transaction.Transactional
 
@@ -12,7 +12,7 @@ class UserService extends BaseService{
     @Transactional
     public boolean save(User userTosave, String roleToAssign){
         log.debug("Guardando al usuario " + userTosave?.username)
-        boolean isSave = grailsApplication.mainContext.userService.save(userTosave)
+        boolean isSave = grailsApplication.mainContext.baseService.save(userTosave)
         log.info("El usuario " + userTosave?.username + " se guardó bien? " + isSave)
         if (isSave && roleToAssign){
             Role role = Role.where { authority == roleToAssign }.get()

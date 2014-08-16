@@ -54,7 +54,7 @@ class UserServiceSpec extends Specification {
         !user.id
     }
 
-    void "test save action with role"() {
+ /*   void "test save action with role"() {
         given:
         def springSecurityService = mockFor(SpringSecurityService)
         springSecurityService.demandExplicit.encodePassword(){String  password ->
@@ -144,5 +144,5 @@ class UserServiceSpec extends Specification {
         success
         !userWithRol.hasErrors()
 
-    }
+    }*/
 }

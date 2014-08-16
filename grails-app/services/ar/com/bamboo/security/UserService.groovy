@@ -7,11 +7,12 @@ import grails.transaction.Transactional
 
 class UserService extends BaseService{
 
+    def grailsApplication
 
     @Transactional
-    public boolean save(User userTosave, String roleToAssign = null){
+    public boolean save(User userTosave, String roleToAssign){
         log.debug("Guardando al usuario " + userTosave?.username)
-        boolean isSave = super.save(userTosave)
+        boolean isSave = grailsApplication.mainContext.userService.save(userTosave)
         log.info("El usuario " + userTosave?.username + " se guardó bien? " + isSave)
         if (isSave && roleToAssign){
             Role role = Role.where { authority == roleToAssign }.get()

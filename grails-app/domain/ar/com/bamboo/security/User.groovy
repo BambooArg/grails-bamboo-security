@@ -52,4 +52,8 @@ class User extends BaseEntity{
         password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
     }
 
+    public String toString(){
+        return username
+    }
+
 }

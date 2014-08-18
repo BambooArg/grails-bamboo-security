@@ -147,5 +147,7 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
         then: "El resultado es una lista de usuarios"
         users != null
         users
+        users.size() >= 1
+        users[0].id
     }
 }

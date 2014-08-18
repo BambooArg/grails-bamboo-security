@@ -1,6 +1,5 @@
 package ar.com.bamboo.security
 
-import ar.com.bamboo.commonsEntity.Person
 import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.security.exception.RoleNotExistException
@@ -37,5 +36,14 @@ class UserService extends BaseService{
         def where = { enabled == true } as DetachedCriteria<User>
         return this.listWithLimit(User.class, where, params)
     }
+
+    @Transactional(readOnly = true)
+    List<User> listByRole(String roleArg) {
+        def where = { role.authority == roleArg && user.enabled == true } as DetachedCriteria<UserRole>
+        Map options = [projections: 'user']
+        return this.listAll(UserRole.class, where, options)
+    }
+
+
 
 }

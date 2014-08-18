@@ -137,4 +137,15 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
         then: "Se hace rollback y no se guarda nada"
         thrown(DuplicateKeyException)
     }
+
+    void "test listByRole method"() {
+        given:
+        User user = new User(username: "gg@gmail.com", password: "password", person: person).save(flush: true, failOnError: true)
+        UserRole.create(user, Role.findByAuthority(Role.ROLE_SUPERUSER), true)
+        when: "Cuando busco los usuario que tienen un rol"
+        List<User> users = userService.listByRole(Role.ROLE_SUPERUSER)
+        then: "El resultado es una lista de usuarios"
+        users != null
+        users
+    }
 }

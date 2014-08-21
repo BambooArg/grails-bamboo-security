@@ -38,6 +38,12 @@ class UserService extends BaseService{
     }
 
     @Transactional(readOnly = true)
+    List<Object> listAll() {
+        def where = { enabled == true } as DetachedCriteria<User>
+        return this.listAll(User.class, where)
+    }
+
+    @Transactional(readOnly = true)
     List<User> listByRole(String roleArg) {
         def where = { role.authority == roleArg && user.enabled == true } as DetachedCriteria<UserRole>
         Map options = [projections: 'user']

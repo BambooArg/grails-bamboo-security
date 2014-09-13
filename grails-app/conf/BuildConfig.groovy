@@ -36,7 +36,6 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
 
         //private repo
-        mavenRepo "http://repository-orkoapp.forge.cloudbees.com/snapshot/"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.

@@ -5,6 +5,7 @@ import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.gorm.DetachedCriteria
 import grails.transaction.Transactional
+import org.apache.commons.lang.RandomStringUtils
 
 class UserService extends BaseService{
 
@@ -22,6 +23,10 @@ class UserService extends BaseService{
         }
 
         log.debug("Guardando al usuario " + userTosave?.username)
+        //Genero el password aleatorio si es que no lo tiene
+        if (!userTosave.password){
+            userTosave = RandomStringUtils.random(8)
+        }
         boolean isSave = grailsApplication.mainContext.baseService.save(userTosave)
         log.info("El usuario " + userTosave?.username + " se guardó bien? " + isSave)
         if (isSave && roleToAssign){

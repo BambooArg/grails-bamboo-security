@@ -15,7 +15,7 @@ class UserService extends BaseService{
     @Transactional
     public boolean save(User userTosave, String roleToAssign){
         if (userTosave.person && !userTosave.person.id ){
-            log.debug("Guardando a la persona " + userTosave?.person?.nombre)
+            log.debug("Guardando a la persona " + userTosave?.person?.firstName)
             personService.save(userTosave.person)
             if (userTosave.person.hasErrors()){
                 throw new ValidatorException(model: userTosave.person)

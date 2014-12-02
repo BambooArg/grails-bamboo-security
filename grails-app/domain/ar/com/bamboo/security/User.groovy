@@ -6,6 +6,7 @@ import ar.com.bamboo.framework.domains.BaseEntity
 class User extends BaseEntity{
 
     transient springSecurityService
+    transient passwordNoEncoding
 
     String username
     String password
@@ -49,6 +50,7 @@ class User extends BaseEntity{
     }
 
     protected void encodePassword() {
+        passwordNoEncoding = password
         password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
     }
 

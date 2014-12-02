@@ -9,9 +9,18 @@ import grails.transaction.Transactional
 class UserService extends BaseService{
 
     def grailsApplication
+    def personService
 
     @Transactional
     public boolean save(User userTosave, String roleToAssign){
+        if (userTosave.person && !userTosave.person.id ){
+            log.debug("Guardando a la persona " + userTosave?.person?.nombre)
+            personService.save(userTosave.person)
+            if (userTosave.person.hasErrors()){
+                throw new ValidatorException(model: userTosave.person)
+            }
+        }
+
         log.debug("Guardando al usuario " + userTosave?.username)
         boolean isSave = grailsApplication.mainContext.baseService.save(userTosave)
         log.info("El usuario " + userTosave?.username + " se guardó bien? " + isSave)

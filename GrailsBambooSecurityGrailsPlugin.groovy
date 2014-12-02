@@ -2,7 +2,7 @@ import ar.com.bamboo.security.services.BambooUserDetailsService
 
 class GrailsBambooSecurityGrailsPlugin {
     // the plugin version
-    def version = "2.4.4"
+    def version = "0.1.0-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.4 > *"
     // resources that are excluded from plugin packaging

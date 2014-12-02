@@ -64,6 +64,10 @@ class UserService extends BaseService{
         return this.listAll(UserRole.class, where, options)
     }
 
-
+    @Transactional(readOnly = true)
+    User getByUsername(String usernameArg) {
+        def where = { enabled == true && username == usernameArg} as DetachedCriteria<User>
+        return this.getUnique(User.class, where)
+    }
 
 }

@@ -25,7 +25,7 @@ class UserService extends BaseService{
         log.debug("Guardando al usuario " + userTosave?.username)
         //Genero el password aleatorio si es que no lo tiene
         if (!userTosave.password){
-            userTosave = RandomStringUtils.random(8)
+            userTosave.password = RandomStringUtils.random(8)
         }
         boolean isSave = grailsApplication.mainContext.baseService.save(userTosave)
         log.info("El usuario " + userTosave?.username + " se guardó bien? " + isSave)

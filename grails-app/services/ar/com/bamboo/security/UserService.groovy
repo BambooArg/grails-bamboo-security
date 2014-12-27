@@ -70,4 +70,17 @@ class UserService extends BaseService{
         return this.getUnique(User.class, where)
     }
 
+    @Transactional(readOnly = true)
+    List<User> getByUsernameOrLastName(String usernameOrLastName) {
+        StringBuilder hql = new StringBuilder(" FROM User user WHERE user.enabled = true AND (user.username LIKE :username ")
+                .append(" OR user.person.lastName LIKE :lastName) ")
+
+        Map<String, Object> parameters = new HashMap<String, Object>()
+        parameters.username = usernameOrLastName + "%"
+        parameters.lastName = usernameOrLastName + "%"
+
+
+        return this.listAllHql(User.class, hql.toString(), parameters)
+    }
+
 }

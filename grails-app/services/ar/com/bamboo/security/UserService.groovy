@@ -66,7 +66,7 @@ class UserService extends BaseService{
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = 'default')
+    @Cacheable(value = 'userlogin', key = '#usernameArg')
     User getByUsername(String usernameArg) {
         def where = { enabled == true && username == usernameArg} as DetachedCriteria<User>
         return this.getUnique(User.class, where)
@@ -85,4 +85,14 @@ class UserService extends BaseService{
         return this.listAllHql(User.class, hql.toString(), parameters)
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(value = 'roleuser', key = '#user.id')
+    List<Role> getRoleByUser(User user) {
+        StringBuilder hql = new StringBuilder(" SELECT ur.role  FROM UserRole ur ")
+                .append(" WHERE ur.user = :user ")
+
+        Map<String, Object> parameters = new HashMap<String, Object>()
+        parameters.user = user
+        return UserRole.executeQuery(hql.toString(), parameters)
+    }
 }

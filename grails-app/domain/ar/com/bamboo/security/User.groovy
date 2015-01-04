@@ -30,6 +30,7 @@ class User extends BaseEntity{
 
     static mapping = {
         password column: '`password`'
+        person fetch: 'join'
     }
 
     Set<Role> getAuthorities() {

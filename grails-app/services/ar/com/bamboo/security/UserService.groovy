@@ -4,6 +4,7 @@ import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.gorm.DetachedCriteria
+import grails.plugin.cache.Cacheable
 import grails.transaction.Transactional
 import org.apache.commons.lang.RandomStringUtils
 
@@ -65,6 +66,7 @@ class UserService extends BaseService{
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = 'default')
     User getByUsername(String usernameArg) {
         def where = { enabled == true && username == usernameArg} as DetachedCriteria<User>
         return this.getUnique(User.class, where)

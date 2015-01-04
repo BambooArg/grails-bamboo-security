@@ -50,6 +50,7 @@ grails.project.dependency.resolution = {
         compile ":grails-bamboo-architecture:0.1.2-SNAPSHOT"
         compile ":grails-bamboo-commons:0.1.0-SNAPSHOT"
         compile ":grails-bamboo-commons-entity:0.1.0-SNAPSHOT"
+        compile ':cache:1.1.8'
 
         runtime ":hibernate4:4.3.5.5"
 

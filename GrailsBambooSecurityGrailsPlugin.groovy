@@ -1,4 +1,3 @@
-import ar.com.bamboo.security.services.BambooSecurityService
 import ar.com.bamboo.security.services.BambooUserDetailsService
 
 class GrailsBambooSecurityGrailsPlugin {

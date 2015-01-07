@@ -4,7 +4,6 @@ import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.gorm.DetachedCriteria
-import grails.plugin.cache.Cacheable
 import grails.transaction.Transactional
 import org.apache.commons.lang.RandomStringUtils
 
@@ -66,10 +65,12 @@ class UserService extends BaseService{
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = 'userlogin', key = '#usernameArg')
-    User getByUsername(String usernameArg) {
-        def where = { enabled == true && username == usernameArg} as DetachedCriteria<User>
-        return this.getUnique(User.class, where)
+    User getByUsername(String username) {
+        StringBuilder hql = new StringBuilder(" SELECT u.id FROM User u ")
+                .append(" WHERE u.enabled = true and u.username = :username ")
+        Map parameters = [username: username]
+        Long id = this.getUnique(User.class, hql.toString(), parameters)
+        return id ? User.get(id) : null
     }
 
     @Transactional(readOnly = true)
@@ -81,12 +82,10 @@ class UserService extends BaseService{
         parameters.username = usernameOrLastName + "%"
         parameters.lastName = usernameOrLastName + "%"
 
-
         return this.listAllHql(User.class, hql.toString(), parameters)
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = 'roleuser', key = '#user.id')
     List<Role> getRoleByUser(User user) {
         StringBuilder hql = new StringBuilder(" SELECT ur.role  FROM UserRole ur ")
                 .append(" WHERE ur.user = :user ")

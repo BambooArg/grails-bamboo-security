@@ -30,7 +30,8 @@ class User extends BaseEntity{
 
     static mapping = {
         password column: '`password`'
-        person fetch: 'join'
+        person lazy: false, cache: true
+        cache usage: 'nonstrict-read-write'
     }
 
     Set<Role> getAuthorities() {

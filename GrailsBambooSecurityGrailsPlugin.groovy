@@ -48,16 +48,6 @@ Manejo de seguridad con SpringSecurity general para todas las aplicaciones de Ba
         userDetailsService(BambooUserDetailsService){
             grailsApplication = ref('grailsApplication')
         }
-
-        springSecurityService(BambooSecurityService) {
-            authenticationTrustResolver = ref('authenticationTrustResolver')
-            grailsApplication = ref('grailsApplication')
-            passwordEncoder = ref('passwordEncoder')
-            objectDefinitionSource = ref('objectDefinitionSource')
-            userDetailsService = ref('userDetailsService')
-            userCache = ref('userCache')
-        }
-
     }
 
     def doWithDynamicMethods = { ctx ->

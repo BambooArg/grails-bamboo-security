@@ -6,6 +6,7 @@ import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.gorm.DetachedCriteria
 import grails.transaction.Transactional
 import org.apache.commons.lang.RandomStringUtils
+import org.springframework.cache.annotation.Cacheable
 
 class UserService extends BaseService{
 
@@ -66,11 +67,17 @@ class UserService extends BaseService{
 
     @Transactional(readOnly = true)
     User getByUsername(String username) {
+        Long id = grailsApplication.mainContext.userService.getIdByUsername(username)
+        return id ? User.get(id) : null
+    }
+
+    @Transactional
+    @Cacheable(value = "default-cache", key = "#username", unless="#result == null")
+    Long getIdByUsername(String username){
         StringBuilder hql = new StringBuilder(" SELECT u.id FROM User u ")
                 .append(" WHERE u.enabled = true and u.username = :username ")
         Map parameters = [username: username]
-        Long id = this.getUnique(User.class, hql.toString(), parameters)
-        return id ? User.get(id) : null
+        return this.getUnique(User.class, hql.toString(), parameters)
     }
 
     @Transactional(readOnly = true)
@@ -87,7 +94,14 @@ class UserService extends BaseService{
 
     @Transactional(readOnly = true)
     List<Role> getRoleByUser(User user) {
-        StringBuilder hql = new StringBuilder(" SELECT ur.role  FROM UserRole ur ")
+        List<Long> idsRole = grailsApplication.mainContext.userService.getIdRoleByUser(user)
+        return this.loadById(Role.class, idsRole)
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "default-cache", key = "#user.id")
+    List<Long> getIdRoleByUser(User user) {
+        StringBuilder hql = new StringBuilder(" SELECT ur.role.id  FROM UserRole ur ")
                 .append(" WHERE ur.user = :user ")
 
         Map<String, Object> parameters = new HashMap<String, Object>()

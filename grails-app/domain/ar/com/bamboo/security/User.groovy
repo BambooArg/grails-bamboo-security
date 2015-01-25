@@ -60,4 +60,7 @@ class User extends BaseEntity{
         return username
     }
 
+    public String getFullName(){
+        return person.toString()
+    }
 }

@@ -32,6 +32,9 @@ class UserService extends BaseService{
             userTosave.password = 'pass'
         }
         boolean isSave = grailsApplication.mainContext.baseService.save(userTosave)
+        if (userTosave.hasErrors()){
+            throw new ValidatorException(model: userTosave)
+        }
         log.info("El usuario " + userTosave?.username + " se guardó bien? " + isSave)
         if (isSave && roleToAssign){
             Role role = Role.where { authority == roleToAssign }.get()

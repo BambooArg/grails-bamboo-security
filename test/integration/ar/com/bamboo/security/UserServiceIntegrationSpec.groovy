@@ -1,6 +1,7 @@
 package ar.com.bamboo.security
 
 import ar.com.bamboo.commonsEntity.Person
+import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.test.spock.IntegrationSpec
 import org.springframework.dao.DuplicateKeyException
@@ -53,8 +54,9 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
     void "test save action with role"() {
         when: "Intento guardar un usuario con role pero con errores de constraint"
         User user = new User()
+        userService.save(user, Role.ROLE_SUPERUSER)
         then: "La acción devuelve false y no guarda"
-        !userService.save(user, Role.ROLE_SUPERUSER)
+        thrown(ValidatorException)
         !user.id
         user.hasErrors()
 
@@ -78,8 +80,9 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
 
         when: "Intento guardar un usuario repetido"
         user = new User(username: "bamboo@gmail.com", password: "quedificil", person: person)
+        userService.save(user, Role.ROLE_SUPERUSER)
         then: "La acción devuelve true y guarda"
-        !userService.save(user, Role.ROLE_SUPERUSER)
+        thrown(ValidatorException.class)
         !user.id
         user.hasErrors()
 

@@ -2,6 +2,7 @@ package ar.com.bamboo.security
 
 import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
+import ar.com.bamboo.framework.persistence.PaginatedResult
 import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.gorm.DetachedCriteria
 import grails.transaction.Transactional
@@ -53,13 +54,13 @@ class UserService extends BaseService{
     }
 
     @Transactional(readOnly = true)
-    List<Object> list(Map params) {
+    PaginatedResult list(Map params) {
         def where = { enabled == true } as DetachedCriteria<User>
         return this.listWithLimit(User.class, where, params)
     }
 
     @Transactional(readOnly = true)
-    List<Object> listAll() {
+    List<User> listAll() {
         def where = { enabled == true } as DetachedCriteria<User>
         return this.listAll(User.class, where)
     }

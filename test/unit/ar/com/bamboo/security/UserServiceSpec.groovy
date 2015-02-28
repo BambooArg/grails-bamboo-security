@@ -1,6 +1,7 @@
 package ar.com.bamboo.security
 
 import ar.com.bamboo.commonsEntity.Person
+import ar.com.bamboo.framework.persistence.PaginatedResult
 import ar.com.bamboo.security.exception.RoleNotExistException
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.test.mixin.Mock
@@ -70,11 +71,12 @@ class UserServiceSpec extends Specification {
         def params = [max: 5]
 
         when: "Cuando se busca con un maximo de 5"
-        def  (List<User> listResult, Integer countResult) = service.list(params)
+        PaginatedResult result = service.list(params)
 
         then: "El resultado de es el maximos para el listResult y el total para countResult"
-        listResult.size() == 5
-        countResult == 10
+        result
+        result.result.size() == 5
+        result.totalRows == 10
     }
 
 

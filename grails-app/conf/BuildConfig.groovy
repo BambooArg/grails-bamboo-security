@@ -54,6 +54,8 @@ grails.project.dependency.resolution = {
 
         runtime ":hibernate4:4.3.5.5"
 
+        test ":build-test-data:2.4.0"
+
         build(":release:3.0.1",
               ":rest-client-builder:1.0.3",
               ":tomcat:7.0.55") {

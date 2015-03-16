@@ -10,6 +10,8 @@ import grails.util.Environment
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.cache.annotation.Cacheable
 
+import java.security.SecureRandom
+
 class UserService extends BaseService{
 
     def grailsApplication
@@ -24,7 +26,7 @@ class UserService extends BaseService{
                 throw new ValidatorException(model: userTosave.person)
             }
         }
-        this.autogeneratePassword()
+        this.autogeneratePassword(userTosave)
         log.debug("Guardando al usuario " + userTosave?.username)
         boolean isSave = grailsApplication.mainContext.baseService.save(userTosave)
         if (userTosave.hasErrors()){
@@ -128,5 +130,73 @@ class UserService extends BaseService{
         Map<String, Object> parameters = new HashMap<String, Object>()
         parameters.user = user
         return UserRole.executeQuery(hql.toString(), parameters)
+    }
+
+    @Transactional
+    TokenLogin generateTokenLogin(User user){
+        grailsApplication.mainContext.userService.expiresOldTokenLoginByUser(user)
+        SecureRandom prng = SecureRandom.getInstance("SHA1PRNG")
+        String token = Integer.toHexString(prng.nextInt())
+        token += Integer.toHexString(prng.nextInt())
+        token += Integer.toHexString(prng.nextInt())
+        TokenLogin tokenLogin = new TokenLogin(user: user, token: token)
+        if (!tokenLogin.save()){
+            log.error("Error en la generación de token para login")
+            throw new ValidatorException(model: tokenLogin)
+        }
+        return tokenLogin
+    }
+
+    @Transactional
+    def expiresOldTokenLoginByUser(User user) {
+        List<TokenLogin> oldsToken = grailsApplication.mainContext.userService.getAllTokenLoginNotExpiredByUser(user)
+        for (token in oldsToken){
+            grailsApplication.mainContext.userService.expiresToken(token)
+        }
+    }
+
+    @Transactional
+    def expiresToken(TokenLogin tokenLogin) {
+        tokenLogin.expired = true
+        if (!tokenLogin.save()){
+            throw new ValidatorException(model: tokenLogin)
+        }
+    }
+
+    @Transactional(readOnly = true)
+    List<TokenLogin> getAllTokenLoginNotExpiredByUser(User user){
+        final User userArg = user
+        def where = { enabled == true && expired == false && user == userArg} as DetachedCriteria<TokenLogin>
+        super.listAll(TokenLogin.class, where)
+    }
+
+    @Transactional(readOnly = true)
+    TokenLogin getTokenLoginNotExpiredByUser(User user){
+        final User userArg = user
+        def where = { enabled == true && expired == false && user == userArg} as DetachedCriteria<TokenLogin>
+        List<TokenLogin> tokenLogins = super.listAll(TokenLogin.class, where)
+        return tokenLogins ? tokenLogins[0] : null
+    }
+
+    @Transactional(readOnly = true)
+    TokenLogin getTokenLoginNotExpiredByToken(String token) {
+        final String tokenArg = token
+        def where = { enabled == true && expired == false && token == tokenArg} as DetachedCriteria<TokenLogin>
+        List<TokenLogin> tokenLogins = super.listAll(TokenLogin.class, where)
+        return tokenLogins ? tokenLogins[0] : null
+    }
+
+    @Transactional
+    def validateAccount(long idUser, String password) {
+        User user = User.get(idUser)
+        user.password = password
+        user.accountVerified = true
+        user.dateAccountVerified = new Date()
+        user.acceptedTermCondition = true
+        user.termConditionDateAccept = new Date()
+        if (!user.save()){
+            throw new ValidatorException<User>(model: user)
+        }
+        grailsApplication.mainContext.userService.expiresOldTokenLoginByUser(user)
     }
 }

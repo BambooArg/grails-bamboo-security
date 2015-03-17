@@ -1,6 +1,7 @@
 package ar.com.bamboo.security
 
 import ar.com.bamboo.security.commandObject.AccountValidator
+import org.springframework.security.core.context.SecurityContextHolder
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 
@@ -13,6 +14,7 @@ class WelcomeController {
             notFound()
             return
         }
+        SecurityContextHolder.clearContext()
         TokenLogin tokenLogin = userService.getTokenLoginNotExpiredByToken(token)
         if (!tokenLogin){
             render view: "tokenExpired"

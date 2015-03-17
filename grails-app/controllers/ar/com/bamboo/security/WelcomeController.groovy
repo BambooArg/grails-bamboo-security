@@ -20,7 +20,7 @@ class WelcomeController {
             render view: "tokenExpired"
             return
         }
-        render model: [accountValidator: new AccountValidator(idUser: tokenLogin.user.id)], view: "welcome"
+        render model: [accountValidator: new AccountValidator(token: tokenLogin.token)], view: "welcome"
     }
 
     def validate(AccountValidator accountValidator){
@@ -29,12 +29,18 @@ class WelcomeController {
             return
         }
 
+        TokenLogin tokenLogin = userService.getTokenLoginNotExpiredByToken(accountValidator.token)
+        if (!tokenLogin){
+            render view: "tokenExpired"
+            return
+        }
+
         if (!accountValidator.validate()){
             render model: [accountValidator: accountValidator], view: "welcome"
             return
         }
 
-        userService.validateAccount(accountValidator.idUser, accountValidator.password)
+        userService.validateAccount(tokenLogin.user, accountValidator.password)
         redirect controller: "login", action: "auth"
     }
 

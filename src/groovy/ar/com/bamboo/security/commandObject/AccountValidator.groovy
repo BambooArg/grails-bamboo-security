@@ -7,7 +7,7 @@ import grails.validation.Validateable
  */
 @Validateable
 class AccountValidator {
-    Long idUser
+    String token
     String password
     String confirmPassword
     boolean termsAndConditions

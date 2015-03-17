@@ -187,8 +187,7 @@ class UserService extends BaseService{
     }
 
     @Transactional
-    def validateAccount(long idUser, String password) {
-        User user = User.get(idUser)
+    def validateAccount(User user, String password) {
         user.password = password
         user.accountVerified = true
         user.dateAccountVerified = new Date()

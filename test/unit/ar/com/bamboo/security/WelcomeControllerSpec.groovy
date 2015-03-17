@@ -49,12 +49,32 @@ class WelcomeControllerSpec extends Specification {
         view == '/welcome/welcome'
         model.size() == 1
         model.accountValidator
+
+        when: "Cuando el token enviado no es válido o expiró"
+        response.reset()
+        controller.userService = userServiceNoToken.createMock()
+        controller.index("adasddssad")
+        then: "Token expired"
+        view == '/welcome/tokenExpired'
     }
 
     void "test validate"() {
         given:
+        def userServiceNoToken = mockFor(UserService.class)
+        userServiceNoToken.demandExplicit.getTokenLoginNotExpiredByToken(1){ String token ->
+            return null
+        }
+
+        def userServiceToken = mockFor(UserService.class)
+        userServiceToken.demandExplicit.getTokenLoginNotExpiredByToken(){ String token ->
+            return TokenLogin.build()
+        }
+
         def userServiceChangePassword = mockFor(UserService.class)
-        userServiceChangePassword.demandExplicit.validateAccount(){long idUser, String password ->
+        userServiceChangePassword.demandExplicit.getTokenLoginNotExpiredByToken(){ String token ->
+            return TokenLogin.build()
+        }
+        userServiceChangePassword.demandExplicit.validateAccount(){User user, String password ->
 
         }
 
@@ -64,16 +84,25 @@ class WelcomeControllerSpec extends Specification {
         response.status == 404
 
         when: "The validate action with changepassword not valid"
+        response.reset()
+        controller.userService = userServiceToken.createMock()
         controller.validate(new AccountValidator())
         then: "Vuelve a la pantalla de welcome con los errores"
         view == '/welcome/welcome'
         model.size() == 1
         model.accountValidator
 
+        when: "Cuando el token enviado no es válido o expiró"
+        response.reset()
+        controller.userService = userServiceNoToken.createMock()
+        controller.validate(new AccountValidator())
+        then: "Token expired"
+        view == '/welcome/tokenExpired'
+
         when: "The validate action with changepassword valid"
         response.reset()
         controller.userService = userServiceChangePassword.createMock()
-        AccountValidator changePassword = new AccountValidator(idUser: 1, password: "ggg", confirmPassword: "ggg",
+        AccountValidator changePassword = new AccountValidator(token: "dsadsad", password: "ggg", confirmPassword: "ggg",
                 termsAndConditions: true)
         controller.validate(changePassword)
         then: "Se redirecciona a login"

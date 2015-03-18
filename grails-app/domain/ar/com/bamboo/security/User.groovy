@@ -30,7 +30,7 @@ class User extends BaseEntity{
 
     static mapping = {
         password column: '`password`'
-        person lazy: false, cache: true
+        person fetch: 'join', cache: true
         cache usage: 'nonstrict-read-write'
     }
 

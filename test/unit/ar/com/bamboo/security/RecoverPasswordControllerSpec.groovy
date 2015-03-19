@@ -1,6 +1,7 @@
 package ar.com.bamboo.security
 
 import ar.com.bamboo.security.commandObject.AccountValidator
+import ar.com.bamboo.security.commandObject.RecoverPassword
 import grails.buildtestdata.mixin.Build
 import grails.test.mixin.TestFor
 import spock.lang.Specification
@@ -8,9 +9,9 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
  */
-@TestFor(WelcomeController)
+@TestFor(RecoverPasswordController)
 @Build(TokenLogin)
-class WelcomeControllerSpec extends Specification {
+class RecoverPasswordControllerSpec extends Specification {
 
     def setup() {
     }
@@ -18,7 +19,7 @@ class WelcomeControllerSpec extends Specification {
     def cleanup() {
     }
 
-    void "test index"() {
+    void "test recover action"() {
         given:
         def userServiceNoToken = mockFor(UserService.class)
         userServiceNoToken.demandExplicit.getTokenLoginNotExpiredByToken(){ String token ->
@@ -45,20 +46,13 @@ class WelcomeControllerSpec extends Specification {
         response.reset()
         controller.userService = userServiceToken.createMock()
         controller.index("342424242423")
-        then: "The view is welcome"
-        view == '/welcome/welcome'
+        then: "The view is recoverPassword"
+        view == '/recoverPassword/recoverPassword'
         model.size() == 1
-        model.accountValidator
-
-        when: "Cuando el token enviado no es válido o expiró"
-        response.reset()
-        controller.userService = userServiceNoToken.createMock()
-        controller.index("adasddssad")
-        then: "Token expired"
-        view == '/tokenExpired'
+        model.recoverPassword
     }
 
-    void "test validate"() {
+    void "test changePassword"() {
         given:
         def userServiceNoToken = mockFor(UserService.class)
         userServiceNoToken.demandExplicit.getTokenLoginNotExpiredByToken(1){ String token ->
@@ -74,41 +68,36 @@ class WelcomeControllerSpec extends Specification {
         userServiceChangePassword.demandExplicit.getTokenLoginNotExpiredByToken(){ String token ->
             return TokenLogin.build()
         }
-        userServiceChangePassword.demandExplicit.validateAccount(){User user, String password ->
+        userServiceChangePassword.demandExplicit.changePassword(){User user, String password ->
 
         }
 
-        when: "The validate action with null params"
-        controller.validate(null)
+        when: "The changePassword action with null params"
+        controller.changePassword(null)
         then: "Response is 404"
         response.status == 404
 
-        when: "The validate action with changepassword not valid"
+        when: "The changePassword action with changepassword not valid"
         response.reset()
         controller.userService = userServiceToken.createMock()
-        controller.validate(new AccountValidator())
+        controller.changePassword(new RecoverPassword())
         then: "Vuelve a la pantalla de welcome con los errores"
-        view == '/welcome/welcome'
+        view == '/recoverPassword/recoverPassword'
         model.size() == 1
-        model.accountValidator
-        model.accountValidator.hasErrors()
-        model.accountValidator.errors['termsAndConditions']
-        model.accountValidator.errors['password']
-        model.accountValidator.errors['confirmPassword']
+        model.recoverPassword
 
         when: "Cuando el token enviado no es válido o expiró"
         response.reset()
         controller.userService = userServiceNoToken.createMock()
-        controller.validate(new AccountValidator())
+        controller.changePassword(new RecoverPassword())
         then: "Token expired"
         view == '/tokenExpired'
 
-        when: "The validate action with changepassword valid"
+        when: "The changePassword action with changepassword valid"
         response.reset()
         controller.userService = userServiceChangePassword.createMock()
-        AccountValidator changePassword = new AccountValidator(token: "dsadsad", password: "ggg", confirmPassword: "ggg",
-                termsAndConditions: true)
-        controller.validate(changePassword)
+        RecoverPassword changePassword = new RecoverPassword(token: "dsadsad", password: "ggg", confirmPassword: "ggg")
+        controller.changePassword(changePassword)
         then: "Se redirecciona a login"
         response.redirectedUrl == "/login/auth"
     }

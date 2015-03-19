@@ -4,6 +4,7 @@ import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.framework.persistence.PaginatedResult
 import ar.com.bamboo.security.exception.RoleNotExistException
+import ar.com.bamboo.security.exception.UserNotExistException
 import grails.gorm.DetachedCriteria
 import grails.transaction.Transactional
 import grails.util.Environment
@@ -197,5 +198,24 @@ class UserService extends BaseService{
             throw new ValidatorException<User>(model: user)
         }
         grailsApplication.mainContext.userService.expiresOldTokenLoginByUser(user)
+    }
+
+    @Transactional
+    User changePassword(User user, String password) {
+        user.password = password
+        if (!user.save()){
+            throw new ValidatorException<User>(model: user)
+        }
+        grailsApplication.mainContext.userService.expiresOldTokenLoginByUser(user)
+        return user
+    }
+
+    @Transactional
+    TokenLogin recoverPassword(String username){
+        User user = grailsApplication.mainContext.userService.getByUsername(username)
+        if (!user){
+            throw new UserNotExistException(username)
+        }
+        grailsApplication.mainContext.userService.generateTokenLogin(user)
     }
 }

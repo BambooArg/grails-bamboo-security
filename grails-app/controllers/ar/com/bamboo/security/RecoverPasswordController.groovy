@@ -1,10 +1,10 @@
 package ar.com.bamboo.security
 
 import ar.com.bamboo.framework.BaseController
-import ar.com.bamboo.security.commandObject.AccountValidator
+import ar.com.bamboo.security.commandObject.RecoverPassword
 import org.springframework.security.core.context.SecurityContextHolder
 
-class WelcomeController extends BaseController{
+class RecoverPasswordController extends BaseController{
 
     def userService
 
@@ -19,27 +19,27 @@ class WelcomeController extends BaseController{
             render view: "/tokenExpired"
             return
         }
-        render model: [accountValidator: new AccountValidator(token: tokenLogin.token)], view: "welcome"
+        render model: [recoverPassword: new RecoverPassword(token: tokenLogin.token)], view: "recoverPassword"
     }
 
-    def validate(AccountValidator accountValidator){
-        if (!accountValidator){
+    def changePassword(RecoverPassword recoverPassword){
+        if (!recoverPassword){
             notFound()
             return
         }
 
-        TokenLogin tokenLogin = userService.getTokenLoginNotExpiredByToken(accountValidator.token)
+        TokenLogin tokenLogin = userService.getTokenLoginNotExpiredByToken(recoverPassword.token)
         if (!tokenLogin){
             render view: "/tokenExpired"
             return
         }
 
-        if (!accountValidator.validate()){
-            render model: [accountValidator: accountValidator], view: "welcome"
+        if (!recoverPassword.validate()){
+            render model: [recoverPassword: recoverPassword], view: "recoverPassword"
             return
         }
 
-        userService.validateAccount(tokenLogin.user, accountValidator.password)
+        userService.changePassword(tokenLogin.user, recoverPassword.password)
         redirect controller: "login", action: "auth"
     }
 }

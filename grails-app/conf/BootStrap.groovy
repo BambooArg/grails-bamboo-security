@@ -4,7 +4,7 @@ class BootStrap {
 
 
     def init = { servletContext ->
-      /*  new Role(authority: Role.ROLE_SUPERUSER).save(flush: true, failOnError: true)
+      /*  new Role(authority: Role.ROLE_SUPERUSER).createUser(flush: true, failOnError: true)
         List<User> users = userService.listByRole(Role.ROLE_SUPERUSER)
         users*/
     }

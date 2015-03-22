@@ -80,7 +80,7 @@ class UserServiceSpec extends Specification {
     }
 
 
-    /*   void "test save action with role"() {
+    /*   void "test createUser action with role"() {
            given:
            def springSecurityService = mockFor(SpringSecurityService)
            springSecurityService.demandExplicit.encodePassword(){String  password ->
@@ -91,14 +91,14 @@ class UserServiceSpec extends Specification {
            when: "Cuando registro usuario sin los datos oblogatorios"
            User user = new User()
            then: "El registro de usuario retorna false"
-           !service.save(user, Role.ROLE_SUPERUSER)
+           !service.createUser(user, Role.ROLE_SUPERUSER)
            user.hasErrors()
            !user.id
 
            when: "Cuando registro usuario con los datos obligatorios"
            user = new User(username: "bamboo@gmail.com", password: "quedificil", person: p)
            then: "El registro de usuario retorna true y el usuario tiene id"
-           service.save(user, Role.ROLE_SUPERUSER)
+           service.createUser(user, Role.ROLE_SUPERUSER)
            !user.hasErrors()
            user.id
            user.getAuthorities()
@@ -107,13 +107,13 @@ class UserServiceSpec extends Specification {
            when: "Cuando registro usuario repetido"
            user = new User(username: "bamboo@gmail.com", password: "quedificil", person: p)
            then: "El registro de usuario retorna false"
-           !service.save(user, Role.ROLE_SUPERUSER)
+           !service.createUser(user, Role.ROLE_SUPERUSER)
            user.hasErrors()
            !user.id
 
            when: "Cuando regitro a un usuario con un rol que no existe"
            user = new User(username: "bambo00o@gmail.com", password: "quedificil", person: p)
-           service.save(user, "ROLE_NO_EXISTE")
+           service.createUser(user, "ROLE_NO_EXISTE")
            then: "El registro de usuario retorna false"
            thrown(RoleNotExistException)
        }
@@ -126,13 +126,13 @@ class UserServiceSpec extends Specification {
            }
            Person p = new Person(firstName: "Mariano")
            User userToEdit = new User(username: "bamboo@gmail.com", password: "password", person: p)
-                   .save(flush: true, failOnError: true)
+                   .createUser(flush: true, failOnError: true)
 
            when: "Cuando lo edito modificando un dato oblogatorio dejandolo sin ser obligatorio"
            userToEdit.username = ''
            userToEdit.password = ''
            userToEdit.person = null
-           boolean isSave = service.save(userToEdit)
+           boolean isSave = service.createUser(userToEdit)
            then: "El update del usuario retorna false"
            !isSave
            userToEdit.hasErrors()
@@ -141,7 +141,7 @@ class UserServiceSpec extends Specification {
            userToEdit.username = 'alberto@gmail.com'
            userToEdit.password = 'superpassword'
            userToEdit.person = p
-           isSave =  service.save(userToEdit)
+           isSave =  service.createUser(userToEdit)
            then: "El update del usuario retorna true"
            isSave
            !userToEdit.hasErrors()
@@ -155,17 +155,17 @@ class UserServiceSpec extends Specification {
            }
            Person p = new Person(firstName: "Mariano")
            User userWithRol = new User(username: "bamboo@gmail.com", password: "password", person: p)
-           service.save(userWithRol, Role.ROLE_SUPERUSER)
+           service.createUser(userWithRol, Role.ROLE_SUPERUSER)
 
            when: "Cuando se quiere agregar un nuevo rol a un usuario"
-           boolean success = service.save(userWithRol, "ROLE_ROLE2")
+           boolean success = service.createUser(userWithRol, "ROLE_ROLE2")
            then: "SE agrega correctamente el rol"
            success
            !userWithRol.hasErrors()
 
            when: "Cuando se quiere agregar un nuevo rol a un usuario y además modificar datos del usuario"
            userWithRol.username = 'alberto@gmail.com'
-           success = service.save(userWithRol, "ROLE_ROLE3")
+           success = service.createUser(userWithRol, "ROLE_ROLE3")
            then: "El registro de usuario retorna false"
            success
            !userWithRol.hasErrors()

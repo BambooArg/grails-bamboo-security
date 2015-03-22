@@ -1,5 +1,6 @@
 package ar.com.bamboo.security
 
+import ar.com.bamboo.commonsEntity.Person
 import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.framework.persistence.PaginatedResult
@@ -19,7 +20,7 @@ class UserService extends BaseService{
     def personService
 
     @Transactional
-    public boolean save(User userTosave, String roleToAssign){
+    public boolean createUser(User userTosave, String roleToAssign){
         if (userTosave.person && !userTosave.person.id ){
             log.debug("Guardando a la persona " + userTosave?.person?.firstName)
             personService.save(userTosave.person)
@@ -217,5 +218,12 @@ class UserService extends BaseService{
             throw new UserNotExistException(username)
         }
         grailsApplication.mainContext.userService.generateTokenLogin(user)
+    }
+
+    @Transactional
+    def updateUser(User user) {
+        if (!grailsApplication.mainContext.baseService.save(user.person)){
+            throw new ValidatorException<Person>(model: user.person)
+        }
     }
 }

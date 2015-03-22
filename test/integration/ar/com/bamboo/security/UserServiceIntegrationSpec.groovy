@@ -54,7 +54,7 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
     void "test save action with role"() {
         when: "Intento guardar un usuario con role pero con errores de constraint"
         User user = new User()
-        userService.save(user, Role.ROLE_SUPERUSER)
+        userService.createUser(user, Role.ROLE_SUPERUSER)
         then: "La acción devuelve false y no guarda"
         thrown(ValidatorException)
         !user.id
@@ -66,7 +66,7 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
         then: "La acción devuelve true y guarda"
         role
         role.authority == Role.ROLE_SUPERUSER
-        userService.save(user, Role.ROLE_SUPERUSER)
+        userService.createUser(user, Role.ROLE_SUPERUSER)
         user.id
         !user.hasErrors()
         //En caso de test rompe, no se porque, cuando lo pruebo manual anda.
@@ -74,13 +74,13 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
        // UserRole.exists(user.id, role.id)
 
         when: "Intento asignarle el rol de superuser de nuevo a la misma person"
-        userService.save(user, Role.ROLE_SUPERUSER)
+        userService.createUser(user, Role.ROLE_SUPERUSER)
         then: "Se arroja una exception"
         thrown(DuplicateKeyException)
 
         when: "Intento guardar un usuario repetido"
         user = new User(username: "bamboo@gmail.com", password: "quedificil", person: person)
-        userService.save(user, Role.ROLE_SUPERUSER)
+        userService.createUser(user, Role.ROLE_SUPERUSER)
         then: "La acción devuelve true y guarda"
         thrown(ValidatorException.class)
         !user.id
@@ -88,7 +88,7 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
 
         when: "Cuando registro a un usuario con un rol que no existe"
         user = new User(username: "bambo00o@gmail.com", password: "quedificil", person: person)
-        userService.save(user, "ROLE_NO_EXISTE")
+        userService.createUser(user, "ROLE_NO_EXISTE")
         then: "La acción arroja exception y no guarda nada"
         thrown(RoleNotExistException)
         //No puedo validar ya que no está haciendo el rollback de toda la transaction
@@ -127,7 +127,7 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
         when: "Intengo agregarle otro rol al usuario, además le modifico datos"
         userDB.discard()
         userToEdit.username = "josesito2@gmail.com"
-        success = userService.save(userToEdit, "ROLE_ROLE2")
+        success = userService.createUser(userToEdit, "ROLE_ROLE2")
         userDB = User.get(userToEdit.id)
         then: "La acción devuelve true y guarda"
         success
@@ -136,7 +136,7 @@ class UserServiceIntegrationSpec extends IntegrationSpec {
         when: "Intengo agregarle otro rol al usuario, pero ya lo tiene"
         userDB.discard()
         userToEdit.username = "josesito3@gmail.com"
-        userService.save(userToEdit, "ROLE_ROLE2")
+        userService.createUser(userToEdit, "ROLE_ROLE2")
         then: "Se hace rollback y no se guarda nada"
         thrown(DuplicateKeyException)
     }

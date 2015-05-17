@@ -16,7 +16,6 @@ grails.project.fork = [
     console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-grails.project.repos.default = "cloudbees"
 grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -29,6 +28,7 @@ grails.project.dependency.resolution = {
         grailsCentral()
         mavenLocal()
         mavenCentral()
+        mavenRepo "http://nexus-bambooarg.rhcloud.com/nexus/content/groups/public/"
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         //mavenRepo "http://repository.codehaus.org"
@@ -36,23 +36,27 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
 
         //private repo
-        mavenRepo "http://repository-orkoapp.forge.cloudbees.com/snapshot/"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // runtime 'mysql:mysql-connector-java:5.1.27'
+        compile 'joda-time:joda-time:2.4'
 
         test "cglib:cglib-nodep:3.1"
     }
 
     plugins {
         compile ":spring-security-core:2.0-RC4"
-        compile ":grails-bamboo-architecture:0.1.2"
+        compile ":grails-bamboo-architecture:1.0.0"
+        compile ":grails-bamboo-commons:1.0.0"
+        compile ":grails-bamboo-commons-entity:1.0.0"
+        compile ':cache:1.1.8'
 
         runtime ":hibernate4:4.3.5.5"
 
-        build(":release:3.0.1",
-              ":rest-client-builder:1.0.3") {
+        test ":build-test-data:2.4.0"
+
+        build(":release:3.1.1", ":tomcat:7.0.55") {
             export = false
         }
     }

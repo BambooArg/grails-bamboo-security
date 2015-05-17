@@ -16,6 +16,15 @@ class BambooUserDetails extends GrailsUser{
                       boolean credentialsNonExpired, boolean accountNonLocked, Collection<GrantedAuthority> authorities,
                       long id, String firstName, String lastName) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, id)
-        this.fullName = firstName + " " + lastName
+        if (firstName && lastName){
+            this.fullName = firstName + " " + lastName
+        }else{
+            if (firstName){
+                this.fullName = firstName
+            }else{
+                this.fullName = lastName
+            }
+        }
+
     }
 }

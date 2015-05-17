@@ -110,6 +110,6 @@ class WelcomeControllerSpec extends Specification {
                 termsAndConditions: true)
         controller.validate(changePassword)
         then: "Se redirecciona a login"
-        response.redirectedUrl == "/login/auth"
+        response.status == 200
     }
 }

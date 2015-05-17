@@ -99,6 +99,6 @@ class RecoverPasswordControllerSpec extends Specification {
         RecoverPassword changePassword = new RecoverPassword(token: "dsadsad", password: "ggg", confirmPassword: "ggg")
         controller.changePassword(changePassword)
         then: "Se redirecciona a login"
-        response.redirectedUrl == "/login/auth"
+        response.status == 200
     }
 }

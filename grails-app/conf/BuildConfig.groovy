@@ -16,7 +16,6 @@ grails.project.fork = [
     console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-grails.project.repos.default = "dropbox"
 grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -29,6 +28,7 @@ grails.project.dependency.resolution = {
         grailsCentral()
         mavenLocal()
         mavenCentral()
+        mavenRepo "http://nexus-bambooarg.rhcloud.com/nexus/content/groups/public/"
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         //mavenRepo "http://repository.codehaus.org"
@@ -56,9 +56,7 @@ grails.project.dependency.resolution = {
 
         test ":build-test-data:2.4.0"
 
-        build(":release:3.0.1",
-              ":rest-client-builder:1.0.3",
-              ":tomcat:7.0.55") {
+        build(":release:3.1.1", ":tomcat:7.0.55") {
             export = false
         }
     }

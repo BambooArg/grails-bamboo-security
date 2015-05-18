@@ -79,7 +79,7 @@ Se ejecutan tantos los test unitarios como integrales, corriendo la base de dato
 #Cómo usarlo
 
 Luego de instalar **grails-bamboo-security**  y **spring-security-core**, **no** se debe correr el script de spring-security-core grails 
-'s2-quickstart', sino que configurar el proyecto en el archivo Conf.groovy con las siguiente configuración de spring-security
+'s2-quickstart', sino que configurar el proyecto en el archivo Config.groovy con las siguiente configuración de spring-security
 
 
 ```groovy

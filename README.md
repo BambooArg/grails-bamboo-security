@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/orkonano/grails-bamboo-security.svg?branch=master)(https://travis-ci.org/orkonano/grails-bamboo-security.svg)
+[![Build Status](https://travis-ci.org/orkonano/grails-bamboo-security.svg?branch=master)
 
 
 grails-bamboo-security

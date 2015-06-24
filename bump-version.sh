@@ -55,8 +55,8 @@ else
         echo "" >> CHANGES
         git add VERSION CHANGES
         git commit -m "Added VERSION and CHANGES files, Version bump to v0.1.0"
-#        git tag -a -m "Tagging version 0.1.0" "v0.1.0"
-#        git push origin --tags
+#       git tag -a -m "Tagging version 0.1.0" "v0.1.0"
+#       git push origin --tags
     fi
 
 fi

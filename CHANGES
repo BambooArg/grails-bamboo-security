@@ -1,3 +1,6 @@
+Version 1.1.0:
+ - Actualizo el bump-version
+
 Version 1.0.0:
  - Cambio de versión del plugin. Corrijo un par de test que estaban fallando
  - cambio la versión de grails. Configuro el repositorio de maven en nexus

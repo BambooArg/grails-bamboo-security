@@ -11,10 +11,12 @@ import org.springframework.security.core.GrantedAuthority
 class BambooUserDetails extends GrailsUser{
 
     final String fullName
+    final boolean acceptedTermCondition
+    final boolean accountVerified
 
     BambooUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
                       boolean credentialsNonExpired, boolean accountNonLocked, Collection<GrantedAuthority> authorities,
-                      long id, String firstName, String lastName) {
+                      long id, String firstName, String lastName, boolean accountVerified, boolean acceptedTermCondition) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, id)
         if (firstName && lastName){
             this.fullName = firstName + " " + lastName
@@ -26,5 +28,7 @@ class BambooUserDetails extends GrailsUser{
             }
         }
 
+        this.acceptedTermCondition = acceptedTermCondition
+        this.accountVerified = accountVerified
     }
 }

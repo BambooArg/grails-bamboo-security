@@ -27,9 +27,10 @@ class BambooUserDetailsService extends GormUserDetailsService{
         try{
             return new BambooUserDetails(user.username, user.password, user.enabled, !user.accountExpired,
                     !user.passwordExpired, !user.accountLocked, authorities, user.id, user.person.firstName ?: "",
-                    user.person.lastName ?: "")
+                    user.person.lastName ?: "", user.accountVerified, user.acceptedTermCondition)
         }catch (Exception e){
             log.error("No se pudo crear BambooUserDetails: ${user.username}", e)
+            throw new RuntimeException(e)
         }
     }
 

@@ -1,5 +1,6 @@
 import ar.com.bamboo.security.services.BambooUserDetailsService
 import ar.com.bamboo.security.provider.BambooAuthenticationProvider
+import grails.util.Holders
 
 class GrailsBambooSecurityGrailsPlugin {
     // the plugin version
@@ -61,7 +62,7 @@ Manejo de seguridad con SpringSecurity general para todas las aplicaciones de Ba
             preAuthenticationChecks = ref('preAuthenticationChecks')
             postAuthenticationChecks = ref('postAuthenticationChecks')
             authoritiesMapper = ref('authoritiesMapper')
-            hideUserNotFoundExceptions = true
+            hideUserNotFoundExceptions = Holders.config.grails.plugin.springsecurity.dao.hideUserNotFoundExceptions //true
         }
     }
 

@@ -1,3 +1,20 @@
+Version 1.2.0:
+ - Cambio la version del plugin a 1.2.0
+ - Merge pull request #8 from orkonano/features-custom-provider
+ - features-custom-provider: Fix units test
+ - features-custom-provider: Cambio la forma de instanciar al Authentication providers
+ - features-custom-provider: Agrego authentication providers DAO para que no permita logear a usuarios que tienen la cuenta desactivada o que no aceptó los termino y condiciones
+ - Merge pull request #6 from orkonano/realease-1.0.0
+ - Merge pull request #5 from orkonano/realease-1.0.0
+ - Fix bug en Readme
+ - Corrijo un error en el formato del status de travis
+ - Agrego status de travis
+ - Update README.md
+ - Merge branch 'realease-1.0.0'
+ - Merge branch 'developer'
+ - Merge branch 'developer'
+ - Merge branch 'developer'
+
 Version 1.1.0:
  - Actualizo el bump-version
 

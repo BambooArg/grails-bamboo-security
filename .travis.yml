@@ -13,7 +13,5 @@ before_script:
 script: ./travis-build.sh
 
 notifications:
-  email:
-    - marianoekfuri@gmail.com
-    - mmicciullo@gmail.com
-
+  slack:
+    secure: CH8XkPAueZBVF60DaFRAM6ajNiG3mRCBZFlRbNd5Ya1ivPUSKYJQp1jJVoSQizd4EabEbK1/1+dDwBm+OiEoNN3FAzkleC8DZNSh/EjmQT2RArLZrv41dx2RlKkMyB0oF16mN6ivDGQofqDqBNDcWOZGpgnewGMgHMWtEluAOrA=

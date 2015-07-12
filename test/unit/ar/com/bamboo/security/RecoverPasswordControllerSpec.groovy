@@ -46,8 +46,8 @@ class RecoverPasswordControllerSpec extends Specification {
         response.reset()
         controller.userService = userServiceToken.createMock()
         controller.index("342424242423")
-        then: "The view is recoverPassword"
-        view == '/recoverPassword/recoverPassword'
+        then: "The view is changePassword"
+        view == '/recoverPassword/changePassword'
         model.size() == 1
         model.recoverPassword
     }
@@ -82,7 +82,7 @@ class RecoverPasswordControllerSpec extends Specification {
         controller.userService = userServiceToken.createMock()
         controller.changePassword(new RecoverPassword())
         then: "Vuelve a la pantalla de welcome con los errores"
-        view == '/recoverPassword/recoverPassword'
+        view == '/recoverPassword/changePassword'
         model.size() == 1
         model.recoverPassword
 

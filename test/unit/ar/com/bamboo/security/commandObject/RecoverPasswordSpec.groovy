@@ -1,6 +1,5 @@
 package ar.com.bamboo.security.commandObject
 
-import grails.buildtestdata.mixin.Build
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
 import spock.lang.Specification

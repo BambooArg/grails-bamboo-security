@@ -1,5 +1,6 @@
 package ar.com.bamboo.security
 
+import ar.com.bamboo.commons.exception.BusinessValidator
 import ar.com.bamboo.commonsEntity.Person
 import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
@@ -18,6 +19,7 @@ class UserService extends BaseService{
 
     def grailsApplication
     def personService
+    def springSecurityService
 
     @Transactional
     public boolean createUser(User userTosave, String roleToAssign){
@@ -202,22 +204,38 @@ class UserService extends BaseService{
     }
 
     @Transactional
+    User changePassword(User user, String oldPassword, String password) {
+        if (!samePassword(oldPassword, user.password)){
+            throw new BusinessValidator("La password actual no es correcta")
+        }
+       this.changePassword(user, password)
+    }
+
+    @Transactional
     User changePassword(User user, String password) {
         user.password = password
         if (!user.save()){
             throw new ValidatorException<User>(model: user)
         }
-        grailsApplication.mainContext.userService.expiresOldTokenLoginByUser(user)
+        proxyUserService.expiresOldTokenLoginByUser(user)
         return user
     }
 
+    private boolean samePassword(String plainPassword, String encryptPassword) {
+        springSecurityService.passwordEncoder.isPasswordValid(encryptPassword, plainPassword, null)
+    }
+
     @Transactional
-    TokenLogin recoverPassword(String username){
+    TokenLogin changePassword(String username){
         User user = grailsApplication.mainContext.userService.getByUsername(username)
         if (!user){
             throw new UserNotExistException(username)
         }
-        grailsApplication.mainContext.userService.generateTokenLogin(user)
+        proxyUserService.generateTokenLogin(user)
+    }
+
+    private UserService getProxyUserService(){
+        grailsApplication.mainContext.userService
     }
 
     @Transactional

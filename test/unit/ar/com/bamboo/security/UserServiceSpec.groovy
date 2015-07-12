@@ -1,24 +1,31 @@
 package ar.com.bamboo.security
 
+import ar.com.bamboo.commons.exception.BusinessValidator
 import ar.com.bamboo.commonsEntity.Person
+import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.framework.persistence.PaginatedResult
-import ar.com.bamboo.security.exception.RoleNotExistException
+import grails.buildtestdata.mixin.Build
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import org.springframework.dao.DuplicateKeyException
+import org.springframework.security.authentication.encoding.PasswordEncoder
 import spock.lang.Specification
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
 @TestFor(UserService)
+@Build(User)
 @Mock([User, Role, UserRole])
 class UserServiceSpec extends Specification {
 
+    def springSecurityService = mockFor(SpringSecurityService.class)
 
+    def passwordEncoder = mockFor(PasswordEncoder.class)
 
-    def setup() {
+    def userService = mockFor(UserService.class)
+
+    def setup(){
         new Role(authority: Role.ROLE_SUPERUSER).save(flush: true, failOnError: true)
         new Role(authority: "ROLE_ROLE2").save(flush: true, failOnError: true)
         new Role(authority: "ROLE_ROLE3").save(flush: true, failOnError: true)
@@ -79,96 +86,84 @@ class UserServiceSpec extends Specification {
         result.totalRows == 10
     }
 
+    void "test changePassword method fail old password invalid"(){
+        setup:
+        passwordEncoder.demandExplicit.isPasswordValid(){ String hashedPassword, String plainPassword, Object salt ->
+            false
+        }
+        def passwordEncoderMocked = passwordEncoder.createMock()
+        springSecurityService.demandExplicit.getPasswordEncoder(){ ->
+            passwordEncoderMocked
+        }
 
-    /*   void "test createUser action with role"() {
-           given:
-           def springSecurityService = mockFor(SpringSecurityService)
-           springSecurityService.demandExplicit.encodePassword(){String  password ->
-               return password
-           }
-           Person p = new Person(firstName: "Mariano")
+        and:
+        User user = new User(password: "passwordHashed")
 
-           when: "Cuando registro usuario sin los datos oblogatorios"
-           User user = new User()
-           then: "El registro de usuario retorna false"
-           !service.createUser(user, Role.ROLE_SUPERUSER)
-           user.hasErrors()
-           !user.id
+        and:
+        service.springSecurityService = springSecurityService.createMock()
 
-           when: "Cuando registro usuario con los datos obligatorios"
-           user = new User(username: "bamboo@gmail.com", password: "quedificil", person: p)
-           then: "El registro de usuario retorna true y el usuario tiene id"
-           service.createUser(user, Role.ROLE_SUPERUSER)
-           !user.hasErrors()
-           user.id
-           user.getAuthorities()
-           UserRole.exists(user.id, 1)
+        when: "Se intenta modificar el password con la contraseña actual erronea"
+        service.changePassword(user, "viejaPassword", "nuevaPassword")
 
-           when: "Cuando registro usuario repetido"
-           user = new User(username: "bamboo@gmail.com", password: "quedificil", person: p)
-           then: "El registro de usuario retorna false"
-           !service.createUser(user, Role.ROLE_SUPERUSER)
-           user.hasErrors()
-           !user.id
+        then: "BusinessValidator is thrown"
+        BusinessValidator e = thrown(BusinessValidator.class)
+        e.message == "La password actual no es correcta"
+    }
 
-           when: "Cuando regitro a un usuario con un rol que no existe"
-           user = new User(username: "bambo00o@gmail.com", password: "quedificil", person: p)
-           service.createUser(user, "ROLE_NO_EXISTE")
-           then: "El registro de usuario retorna false"
-           thrown(RoleNotExistException)
-       }
+    void "test changePassword method fail because invalid user"(){
+        setup:
+        passwordEncoder.demandExplicit.isPasswordValid(){ String hashedPassword, String plainPassword, Object salt ->
+            true
+        }
+        def passwordEncoderMocked = passwordEncoder.createMock()
+        springSecurityService.demandExplicit.getPasswordEncoder(){ ->
+            passwordEncoderMocked
+        }
 
-       void "test edit action"(){
-           given:
-           def springSecurityService = mockFor(SpringSecurityService)
-           springSecurityService.demandExplicit.encodePassword(){String  password ->
-               return password
-           }
-           Person p = new Person(firstName: "Mariano")
-           User userToEdit = new User(username: "bamboo@gmail.com", password: "password", person: p)
-                   .createUser(flush: true, failOnError: true)
+        and:
+        User user = new User(password: "passwordHashed")
 
-           when: "Cuando lo edito modificando un dato oblogatorio dejandolo sin ser obligatorio"
-           userToEdit.username = ''
-           userToEdit.password = ''
-           userToEdit.person = null
-           boolean isSave = service.createUser(userToEdit)
-           then: "El update del usuario retorna false"
-           !isSave
-           userToEdit.hasErrors()
+        and:
+        service.springSecurityService = springSecurityService.createMock()
 
-           when: "Cuando lo edito modificando dejando los datos obligatorios"
-           userToEdit.username = 'alberto@gmail.com'
-           userToEdit.password = 'superpassword'
-           userToEdit.person = p
-           isSave =  service.createUser(userToEdit)
-           then: "El update del usuario retorna true"
-           isSave
-           !userToEdit.hasErrors()
-       }
+        when: "Se intenta modificar el password con un usuario inválido"
+        service.changePassword(user, "viejaPassword", "nuevaPassword")
 
-       void "test agregar nuevo rol a usuario con un rol"() {
-           given:
-           def springSecurityService = mockFor(SpringSecurityService)
-           springSecurityService.demandExplicit.encodePassword(){String  password ->
-               return password
-           }
-           Person p = new Person(firstName: "Mariano")
-           User userWithRol = new User(username: "bamboo@gmail.com", password: "password", person: p)
-           service.createUser(userWithRol, Role.ROLE_SUPERUSER)
+        then: "BusinessValidator is thrown"
+        ValidatorException e = thrown(ValidatorException.class)
+        e.model
+        e.model.is(user)
+    }
 
-           when: "Cuando se quiere agregar un nuevo rol a un usuario"
-           boolean success = service.createUser(userWithRol, "ROLE_ROLE2")
-           then: "SE agrega correctamente el rol"
-           success
-           !userWithRol.hasErrors()
+    void "test changePassword method success"(){
+        setup:
+        passwordEncoder.demandExplicit.isPasswordValid(){ String hashedPassword, String plainPassword, Object salt ->
+            true
+        }
 
-           when: "Cuando se quiere agregar un nuevo rol a un usuario y además modificar datos del usuario"
-           userWithRol.username = 'alberto@gmail.com'
-           success = service.createUser(userWithRol, "ROLE_ROLE3")
-           then: "El registro de usuario retorna false"
-           success
-           !userWithRol.hasErrors()
+        def passwordEncoderMocked = passwordEncoder.createMock()
+        springSecurityService.demandExplicit.getPasswordEncoder(){ ->
+            passwordEncoderMocked
+        }
 
-       }*/
+        userService.demandExplicit.expiresOldTokenLoginByUser(){User user ->
+
+        }
+        def userServiceMock = userService.createMock()
+
+        and:
+        User user = User.build()
+
+        and:
+        service.springSecurityService = springSecurityService.createMock()
+        service.metaClass.getProxyUserService = { ->
+            userServiceMock
+        }
+
+        when: "Se intenta modificar el password con todos los datos correctos"
+        service.changePassword(user, "viejaPassword", "nuevaPassword")
+
+        then: "La validación es correcta"
+        user.password == "nuevaPassword"
+    }
 }

@@ -19,7 +19,7 @@ class RecoverPasswordController extends BaseController{
             render view: "/tokenExpired"
             return
         }
-        render model: [recoverPassword: new RecoverPassword(token: tokenLogin.token)], view: "recoverPassword"
+        render model: [recoverPassword: new RecoverPassword(token: tokenLogin.token)], view: "changePassword"
     }
 
     def changePassword(RecoverPassword recoverPassword){
@@ -35,7 +35,7 @@ class RecoverPasswordController extends BaseController{
         }
 
         if (!recoverPassword.validate()){
-            render model: [recoverPassword: recoverPassword], view: "recoverPassword"
+            render model: [recoverPassword: recoverPassword], view: "changePassword"
             return
         }
 

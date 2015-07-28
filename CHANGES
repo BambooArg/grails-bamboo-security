@@ -1,3 +1,11 @@
+Version 1.4.0:
+ - Merge pull request #10 from orkonano/developer
+ - developer: Se cambia la versión del plugin a 1.4.0
+ - Se agrega una configuración para travis CI
+ - Merge pull request #9 from orkonano/ft-not-repeat-password
+ - ft-not-repeat-password: Se agrega la validación de no poder ingresar la misma password actual
+ - master: Cambio en el archivo bump-version.sh
+
 Version 1.3.0:
 
 

@@ -206,9 +206,14 @@ class UserService extends BaseService{
     @Transactional
     User changePassword(User user, String oldPassword, String password) {
         if (!samePassword(oldPassword, user.password)){
-            throw new BusinessValidator("La password actual no es correcta")
+            throw new BusinessValidator("La contraseña actual no es correcta.")
         }
-       this.changePassword(user, password)
+
+        if (samePassword(password, user.password)){
+            throw new BusinessValidator("La contraseña debe ser diferente al actual.")
+        }
+
+        this.changePassword(user, password)
     }
 
     @Transactional

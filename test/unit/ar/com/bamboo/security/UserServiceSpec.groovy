@@ -107,16 +107,44 @@ class UserServiceSpec extends Specification {
 
         then: "BusinessValidator is thrown"
         BusinessValidator e = thrown(BusinessValidator.class)
-        e.message == "La password actual no es correcta"
+        e.message == "La contraseña actual no es correcta."
+    }
+
+    void "test changePassword method fail same password"(){
+        setup:
+        passwordEncoder.demandExplicit.isPasswordValid(2){ String hashedPassword, String plainPassword, Object salt ->
+            plainPassword == 'mismaPassword'
+        }
+        def passwordEncoderMocked = passwordEncoder.createMock()
+        springSecurityService.demandExplicit.getPasswordEncoder(2){ ->
+            passwordEncoderMocked
+        }
+
+        and:
+        User user = new User(password: "invalida")
+
+        and:
+        service.springSecurityService = springSecurityService.createMock()
+
+        when: "Se intenta modificar el password, con la misma password actual"
+        service.changePassword(user, "mismaPassword", "mismaPassword")
+
+        then: "BusinessValidator is thrown"
+        BusinessValidator e = thrown(BusinessValidator.class)
+        e.message == "La contraseña debe ser diferente al actual."
     }
 
     void "test changePassword method fail because invalid user"(){
         setup:
-        passwordEncoder.demandExplicit.isPasswordValid(){ String hashedPassword, String plainPassword, Object salt ->
-            true
+        passwordEncoder.demandExplicit.isPasswordValid(2){ String hashedPassword, String plainPassword, Object salt ->
+            if (plainPassword == "viejaPassword"){
+                return true
+            }else if (plainPassword == "nuevaPassword"){
+                return false
+            }
         }
         def passwordEncoderMocked = passwordEncoder.createMock()
-        springSecurityService.demandExplicit.getPasswordEncoder(){ ->
+        springSecurityService.demandExplicit.getPasswordEncoder(2){ ->
             passwordEncoderMocked
         }
 
@@ -137,12 +165,16 @@ class UserServiceSpec extends Specification {
 
     void "test changePassword method success"(){
         setup:
-        passwordEncoder.demandExplicit.isPasswordValid(){ String hashedPassword, String plainPassword, Object salt ->
-            true
+        passwordEncoder.demandExplicit.isPasswordValid(2){ String hashedPassword, String plainPassword, Object salt ->
+            if (plainPassword == "viejaPassword"){
+                return true
+            }else if (plainPassword == "nuevaPassword"){
+                return false
+            }
         }
 
         def passwordEncoderMocked = passwordEncoder.createMock()
-        springSecurityService.demandExplicit.getPasswordEncoder(){ ->
+        springSecurityService.demandExplicit.getPasswordEncoder(2){ ->
             passwordEncoderMocked
         }
 

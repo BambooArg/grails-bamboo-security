@@ -210,7 +210,7 @@ class UserService extends BaseService{
         }
 
         if (samePassword(password, user.password)){
-            throw new BusinessValidator("La contraseña debe ser diferente al actual.")
+            throw new BusinessValidator("La contraseña debe ser diferente a la actual.")
         }
 
         this.changePassword(user, password)

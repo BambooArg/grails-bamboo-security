@@ -1,3 +1,9 @@
+Version 1.4.1:
+ - Merge branch 'master' of https://github.com/orkonano/grails-bamboo-security
+ - Merge pull request #12 from orkonano/hotfix-mensaje-misma-password
+ - hotfix-mensaje-misma-password: Se modifica la versión del plugin
+ - hotfix-mensaje-misma-password: Fix bug en mensaje de error de misma password
+
 Version 1.4.0:
  - Merge pull request #10 from orkonano/developer
  - developer: Se cambia la versión del plugin a 1.4.0

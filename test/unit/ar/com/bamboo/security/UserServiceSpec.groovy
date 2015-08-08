@@ -131,7 +131,7 @@ class UserServiceSpec extends Specification {
 
         then: "BusinessValidator is thrown"
         BusinessValidator e = thrown(BusinessValidator.class)
-        e.message == "La contraseña debe ser diferente al actual."
+        e.message == "La contraseña debe ser diferente a la actual."
     }
 
     void "test changePassword method fail because invalid user"(){

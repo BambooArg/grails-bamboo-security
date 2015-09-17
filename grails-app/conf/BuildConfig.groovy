@@ -49,7 +49,7 @@ grails.project.dependency.resolution = {
         compile ":spring-security-core:2.0-RC5"
         compile ":grails-bamboo-architecture:1.0.0"
         compile ":grails-bamboo-commons:1.0.0"
-        compile ":grails-bamboo-commons-entity:1.0.0"
+        compile ":grails-bamboo-commons-entity:1.2.0"
         compile ':cache:1.1.8'
 
         runtime ":hibernate4:4.3.5.5"

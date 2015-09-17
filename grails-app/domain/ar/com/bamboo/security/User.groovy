@@ -29,6 +29,7 @@ class User extends BaseEntity{
     }
 
     static mapping = {
+        batchSize 10
         password column: '`password`'
         person lazy: false, cache: true
         cache usage: 'nonstrict-read-write'

@@ -25,10 +25,10 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
+        mavenRepo "http://nexus-bambooarg.rhcloud.com/nexus/content/groups/public/"
         grailsCentral()
         mavenLocal()
         mavenCentral()
-        mavenRepo "http://nexus-bambooarg.rhcloud.com/nexus/content/groups/public/"
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         //mavenRepo "http://repository.codehaus.org"
@@ -47,8 +47,8 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":spring-security-core:2.0-RC5"
-        compile ":grails-bamboo-architecture:1.0.0"
-        compile ":grails-bamboo-commons:1.0.0"
+        compile ":grails-bamboo-architecture:1.1.2"
+        compile ":grails-bamboo-commons:1.3.0"
         compile ":grails-bamboo-commons-entity:1.2.0"
         compile ':cache:1.1.8'
 

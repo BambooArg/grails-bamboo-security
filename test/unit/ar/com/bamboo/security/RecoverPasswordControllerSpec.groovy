@@ -1,6 +1,5 @@
 package ar.com.bamboo.security
 
-import ar.com.bamboo.security.commandObject.AccountValidator
 import ar.com.bamboo.security.commandObject.RecoverPassword
 import grails.buildtestdata.mixin.Build
 import grails.test.mixin.TestFor

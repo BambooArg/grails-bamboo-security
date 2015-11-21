@@ -47,8 +47,8 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":spring-security-core:2.0-RC5"
-        compile ":grails-bamboo-architecture:1.0.0"
-        compile ":grails-bamboo-commons:1.0.0"
+        compile ":grails-bamboo-architecture:1.2.1"
+        compile ":grails-bamboo-commons:1.3.0"
         compile ":grails-bamboo-commons-entity:1.2.0"
         compile ':cache:1.1.8'
 

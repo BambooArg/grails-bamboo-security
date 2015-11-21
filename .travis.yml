@@ -6,6 +6,7 @@ branches:
     - developer
     - /^hotfix-.*$/
     - /^release-.*$/
+    - /^ft-.*$/
 
 before_script:
  - chmod +x grailsw

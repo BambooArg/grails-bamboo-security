@@ -1,5 +1,4 @@
-![Build Status](https://api.travis-ci.org/BambooArg/grails-bamboo-security.svg?branch=master)
-
+[![Build Status](https://travis-ci.org/BambooArg/grails-bamboo-security.svg?branch=master)](https://travis-ci.org/BambooArg/grails-bamboo-security.svg)
 
 grails-bamboo-security
 ======================
@@ -13,7 +12,7 @@ como para permitir su extensión en caso de necesitarlo.
 
 Agregar el plugin al proyecto
 ```groovy
-compile ":grails-bamboo-security:0.1.0"
+compile "org.grails.plugin:grails-bamboo-security:$version"
 ```
 
 ##Dependencias
@@ -33,25 +32,25 @@ Las clases por default para el manejo de usuarios y roles son *User*, *Role* y *
 *BambooUserDetailsService* está configurada como un bean de Spring bajo el nombre de *userDetailsService*
 
 
-#Build
+# Build
 
 Para compilar el proyecto e intalarlo localmente se debe ejecutar
 
- ```grails
-grails maven-install 
+ ```script
+gradle install
 ```
 
 Para publicar un release se debe ejecutar
 
-```grails
-grails publish-plugin
+```script
+gradle publishMavenPublicationToBambooReleaseRepository
 
 ```
 
 Para publicar un snapshot se debe ejecutar
 
-```grails
-grails publish-plugin --repository=bambooRepoSnapshot
+```script
+gradle publishMavenPublicationToBambooSNAPSHOTRepository
 
 ```
 
@@ -59,30 +58,34 @@ El repositorio default para la publicación es http://nexus-bambooarg.rhcloud.co
 
 
 ###**Atención**
-Tener en cuenta que se tiene que tener configurado en .grails/setting.groovy
-```groovy
-grails.project.repos.default = "bambooRepo"
-grails.project.repos.bambooRepo.url = "http://nexus-bambooarg.rhcloud.com/nexus/content/repositories/releases/"
-grails.project.repos.bambooRepo.type = "maven"
-grails.project.repos.bambooRepo.username = username (poner el username real)
-grails.project.repos.bambooRepo.password = password (poner el password real)
+Tener en cuenta que se tiene que tener configurado:
 
-grails.project.repos.bambooRepoSnapshot.url = "http://nexus-bambooarg.rhcloud.com/nexus/content/repositories/snapshots/"
-grails.project.repos.bambooRepoSnapshot.type = "maven"
-grails.project.repos.bambooRepoSnapshot.username = username
-grails.project.repos.bambooRepoSnapshot.password = password
+Las variables de entorno
+
+```script
+BAMBOO_REPOSITORY_USERNAME
+BAMBOO_REPOSITORY_PASSWORD
+
+```
+
+o las propiedades del proyecto
+```script
+bambooRepositoryUsername
+bambooRepositoryPassword
+
+```
 
 
-#Test
+# Test
 
-El proyecto usa travis-ci como entorno de integración continua. https://travis-ci.org/orkonano/grails-bamboo-security.
+El proyecto usa travis-ci como entorno de integración continua. https://travis-ci.org/BambooArg/grails-bamboo-security.
 Se ejecutan tantos los test unitarios como integrales, corriendo la base de datos de test en memoria.
 
 
-#Cómo usarlo
+# ¿Cómo usarlo?
 
 Luego de instalar **grails-bamboo-security**  y **spring-security-core**, **no** se debe correr el script de spring-security-core grails 
-'s2-quickstart', sino que configurar el proyecto en el archivo Config.groovy con las siguiente configuración de spring-security
+'s2-quickstart', sino que configurar el proyecto en el archivo application.groovy con las siguiente configuración de spring-security
 
 
 ```groovy
@@ -90,14 +93,15 @@ grails.plugin.springsecurity.userLookup.userDomainClassName = 'ar.com.bamboo.sec
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'ar.com.bamboo.security.UserRole'
 grails.plugin.springsecurity.authority.className = 'ar.com.bamboo.security.Role'
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
-	'/':                              ['permitAll'],
-	'/index':                         ['permitAll'],
-	'/index.gsp':                     ['permitAll'],
-	'/assets/**':                     ['permitAll'],
-	'/**/js/**':                      ['permitAll'],
-	'/**/css/**':                     ['permitAll'],
-	'/**/images/**':                  ['permitAll'],
-	'/**/favicon.ico':                ['permitAll']
+        [pattern: '/',                  access: ['permitAll']],
+        [pattern: '/index',             access: ['permitAll']],
+        [pattern: '/index.gsp',         access: ['permitAll']],
+        [pattern: '/assets/**',         access: ['permitAll']],
+        [pattern: '/**/js/**',          access: ['permitAll']],
+        [pattern: '/**/css/**',         access: ['permitAll']],
+        [pattern: '/**/images/**',      access: ['permitAll']],
+        [pattern: '/**/favicon.ico',    access: ['permitAll']]
+]
 ]
 ```
 

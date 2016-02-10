@@ -100,7 +100,7 @@ class UserService extends BaseService{
     @Transactional
     @Cacheable(value = "default-cache", key = "#username", unless="#result == null")
     Long getIdByUsername(String username){
-        StringBuilder hql = new StringBuilder(" SELECT u.id FROM User u ")
+        StringBuilder hql = new StringBuilder("SELECT u.id FROM User u ")
                 .append(" WHERE u.enabled = true and u.username = :username ")
         Map parameters = [username: username]
         return this.getUnique(User.class, hql.toString(), parameters)
@@ -108,7 +108,7 @@ class UserService extends BaseService{
 
     @Transactional(readOnly = true)
     List<User> getByUsernameOrLastName(String usernameOrLastName) {
-        StringBuilder hql = new StringBuilder(" FROM User user WHERE user.enabled = true AND (user.username LIKE :username ")
+        StringBuilder hql = new StringBuilder("FROM User user WHERE user.enabled = true AND (user.username LIKE :username ")
                 .append(" OR user.person.lastName LIKE :lastName) ")
 
         Map<String, Object> parameters = new HashMap<String, Object>()
@@ -127,7 +127,7 @@ class UserService extends BaseService{
     @Transactional(readOnly = true)
     @Cacheable(value = "default-cache", key = "#user.id")
     List<Long> getIdRoleByUser(User user) {
-        StringBuilder hql = new StringBuilder(" SELECT ur.role.id  FROM UserRole ur ")
+        StringBuilder hql = new StringBuilder("SELECT ur.role.id  FROM UserRole ur ")
                 .append(" WHERE ur.user = :user ")
 
         Map<String, Object> parameters = new HashMap<String, Object>()

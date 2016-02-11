@@ -3,7 +3,7 @@ package ar.com.bamboo.security
 import ar.com.bamboo.commonsEntity.Person
 import ar.com.bamboo.framework.domains.BaseEntity
 
-class User extends BaseEntity{
+class User implements BaseEntity{
 
     transient springSecurityService
     transient passwordNoEncoding
@@ -40,7 +40,7 @@ class User extends BaseEntity{
     }
 
     @Override
-    protected void executeMoreBeforeInsert() {
+    public void executeMoreBeforeInsert() {
         encodePassword()
         acceptedTermCondition = false
         accountVerified = false

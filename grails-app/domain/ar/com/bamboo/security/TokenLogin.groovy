@@ -2,7 +2,7 @@ package ar.com.bamboo.security
 
 import ar.com.bamboo.framework.domains.BaseEntity
 
-class TokenLogin extends BaseEntity{
+class TokenLogin implements BaseEntity{
     String token
     User user
     boolean expired
@@ -10,8 +10,4 @@ class TokenLogin extends BaseEntity{
     static constraints = {
     }
 
-    @Override
-    protected void executeMoreBeforeInsert() {
-        expired = false
-    }
 }

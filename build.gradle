@@ -51,14 +51,11 @@ dependencyManagement {
 dependencies {
 
     compile 'joda-time:joda-time:2.4'
-    compile "org.grails.plugins:grails-bamboo-commons:2.0.1-SNAPSHOT"
-    compile "org.grails.plugins:grails-bamboo-architecture:2.0.2-SNAPSHOT"
-    compile "org.grails.plugins:grails-bamboo-commons-entity:2.0.1-SNAPSHOT"
+    compile "org.grails.plugins:grails-bamboo-commons-entity:2.0.1"
     compile "org.grails.plugins:cache"
     compile "org.grails.plugins:spring-security-core:3.0.3"
 
     runtime "org.grails.plugins:hibernate4"
-
 
     provided 'org.springframework.boot:spring-boot-starter-logging'
     provided "org.springframework.boot:spring-boot-starter-actuator"

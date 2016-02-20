@@ -20,7 +20,7 @@ class BambooAuthenticationProvider extends DaoAuthenticationProvider{
         BambooUserDetails bambooUserDetails = (BambooUserDetails) userDetails
         if (!bambooUserDetails.accountVerified || !bambooUserDetails.acceptedTermCondition){
             throw new BadCredentialsException(this.messages.getMessage("BambooAuthenticationProvider.badCredentials",
-                    "Bad credentials"), userDetails);
+                    "Bad credentials"));
         }
     }
 }

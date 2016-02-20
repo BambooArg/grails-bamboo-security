@@ -49,7 +49,7 @@ Manejo de seguridad con SpringSecurity general para todas las aplicaciones de Ba
         // TODO Implement additions to web.xml (optional), this event occurs before
     }
 
-    def doWithSpring = {
+    Closure doWithSpring() {{->
         userDetailsService(BambooUserDetailsService){
             grailsApplication = ref('grailsApplication')
         }
@@ -64,7 +64,7 @@ Manejo de seguridad con SpringSecurity general para todas las aplicaciones de Ba
             authoritiesMapper = ref('authoritiesMapper')
             hideUserNotFoundExceptions = Holders.config.grails.plugin.springsecurity.dao.hideUserNotFoundExceptions //true
         }
-    }
+    }}
 
     def doWithDynamicMethods = { ctx ->
         // TODO Implement registering dynamic methods to classes (optional)

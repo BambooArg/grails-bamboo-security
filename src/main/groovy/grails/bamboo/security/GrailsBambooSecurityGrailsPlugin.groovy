@@ -2,9 +2,12 @@ package grails.bamboo.security
 
 import ar.com.bamboo.security.services.BambooUserDetailsService
 import ar.com.bamboo.security.provider.BambooAuthenticationProvider
+import grails.plugins.Plugin
 import grails.util.Holders
+import groovy.util.logging.Slf4j
 
-class GrailsBambooSecurityGrailsPlugin {
+@Slf4j
+class GrailsBambooSecurityGrailsPlugin extends Plugin{
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.1.0 > *"
     // resources that are excluded from plugin packaging
@@ -50,9 +53,14 @@ Manejo de seguridad con SpringSecurity general para todas las aplicaciones de Ba
     }
 
     Closure doWithSpring() {{->
+
+        log.info("Loading BambooUserDetailsService")
+
         userDetailsService(BambooUserDetailsService){
-            grailsApplication = ref('grailsApplication')
+            grailsApplication = grailsApplication
         }
+
+        log.info("Loading BambooAuthenticationProvider")
 
         daoAuthenticationProvider(BambooAuthenticationProvider) {
             userDetailsService = ref('userDetailsService')

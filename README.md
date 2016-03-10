@@ -40,19 +40,14 @@ Para compilar el proyecto e intalarlo localmente se debe ejecutar
 gradle install
 ```
 
-Para publicar un release se debe ejecutar
+Para publicar en nexus hay que ejecutar
 
 ```script
-gradle publishMavenPublicationToBambooReleaseRepository
+gradle publish
 
 ```
 
-Para publicar un snapshot se debe ejecutar
-
-```script
-gradle publishMavenPublicationToBambooSNAPSHOTRepository
-
-```
+Según si la versión contiene o no SNAPSHOT, se publicará en el repositorio release o snapshot
 
 El repositorio default para la publicación es http://nexus-bambooarg.rhcloud.com/nexus/content/groups/public/
 

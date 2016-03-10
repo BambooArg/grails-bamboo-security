@@ -15,7 +15,7 @@ plugins {
     id "io.spring.dependency-management" version "0.5.4.RELEASE"
 }
 
-version "2.0.2"
+version "2.0.3"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
@@ -99,21 +99,15 @@ def bambooRepositoryPassword = System.getenv("BAMBOO_REPOSITORY_PASSWORD") ?: pr
 publishing {
     repositories {
         maven {
-            name "bambooRelease"
             credentials {
                 username bambooRepositoryUsername
                 password bambooRepositoryPassword
             }
-            url "http://nexus-bambooarg.rhcloud.com/nexus/content/repositories/releases/"
-        }
-
-        maven {
-            name "bambooSNAPSHOT"
-            credentials {
-                username bambooRepositoryUsername
-                password bambooRepositoryPassword
+            if(version.endsWith('-SNAPSHOT')) {
+                url "http://nexus-bambooarg.rhcloud.com/nexus/content/repositories/snapshots/"
+            }else{
+                url "http://nexus-bambooarg.rhcloud.com/nexus/content/repositories/releases/"
             }
-            url "http://nexus-bambooarg.rhcloud.com/nexus/content/repositories/snapshots/"
         }
     }
 }

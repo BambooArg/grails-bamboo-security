@@ -15,7 +15,13 @@ plugins {
     id "io.spring.dependency-management" version "0.5.4.RELEASE"
 }
 
-version "2.0.3"
+ext {
+    grailsBambooSecurityVersion = '2.0.4'
+    grailsVersion = project.grailsVersion
+    gradleWrapperVersion = project.gradleWrapperVersion
+}
+
+version grailsBambooSecurityVersion
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
@@ -25,11 +31,6 @@ apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.grails-plugin-publish"
-
-ext {
-    grailsVersion = project.grailsVersion
-    gradleWrapperVersion = project.gradleWrapperVersion
-}
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -51,11 +52,11 @@ dependencyManagement {
 dependencies {
 
     compile 'joda-time:joda-time:2.4'
-    compile "org.grails.plugins:grails-bamboo-commons-entity:2.0.1"
+    compile "org.grails.plugins:grails-bamboo-commons-entity:2.0.2"
     compile "org.grails.plugins:cache"
     compile "org.grails.plugins:spring-security-core:3.0.3"
 
-    runtime "org.grails.plugins:hibernate4"
+    runtime 'org.grails.plugins:hibernate4:5.0.3'
 
     provided 'org.springframework.boot:spring-boot-starter-logging'
     provided "org.springframework.boot:spring-boot-starter-actuator"

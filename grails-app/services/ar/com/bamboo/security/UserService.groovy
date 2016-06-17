@@ -2,23 +2,27 @@ package ar.com.bamboo.security
 
 import ar.com.bamboo.commons.exception.BusinessValidator
 import ar.com.bamboo.commonsEntity.Person
+import ar.com.bamboo.commonsEntity.PersonService
 import ar.com.bamboo.framework.BaseService
 import ar.com.bamboo.framework.exceptions.ValidatorException
 import ar.com.bamboo.framework.persistence.PaginatedResult
 import ar.com.bamboo.security.exception.RoleNotExistException
 import ar.com.bamboo.security.exception.UserNotExistException
+import grails.core.GrailsApplication
 import grails.gorm.DetachedCriteria
+import grails.plugin.cache.Cacheable
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import grails.util.Environment
 import org.apache.commons.lang.RandomStringUtils
-import org.springframework.cache.annotation.Cacheable
 
 import java.security.SecureRandom
 
 class UserService extends BaseService{
 
-    def personService
-    def springSecurityService
+    PersonService personService
+    SpringSecurityService springSecurityService
+    GrailsApplication grailsApplication
 
     @Transactional
     public boolean createUser(User userTosave, String roleToAssign){
@@ -93,12 +97,12 @@ class UserService extends BaseService{
 
     @Transactional(readOnly = true)
     User getByUsername(String username) {
-        Long id = this.getIdByUsername(username)
+        Long id = grailsApplication.mainContext.userService.getIdByUsername(username)
         return id ? User.get(id) : null
     }
 
     @Transactional
-    @Cacheable(value = "default-cache", key = "#username", unless="#result == null")
+    @Cacheable(value = "default-cache", key = "#username")
     Long getIdByUsername(String username){
         StringBuilder hql = new StringBuilder("SELECT u.id FROM User u ")
                 .append(" WHERE u.enabled = true and u.username = :username ")
@@ -120,7 +124,7 @@ class UserService extends BaseService{
 
     @Transactional(readOnly = true)
     List<Role> getRoleByUser(User user) {
-        List<Long> idsRole = this.getIdRoleByUser(user)
+        List<Long> idsRole = grailsApplication.mainContext.userService.getIdRoleByUser(user)
         return this.loadById(Role.class, idsRole)
     }
 

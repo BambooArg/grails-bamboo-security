@@ -3,6 +3,7 @@ package ar.com.bamboo.security.services
 import ar.com.bamboo.security.User
 import ar.com.bamboo.security.encrypter.AutoLoginEncrypter
 import ar.com.bamboo.security.token.AutoLoginAuthenticationToken
+import grails.plugin.cache.Cacheable
 import grails.plugin.springsecurity.userdetails.GrailsUserDetailsService
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.security.authentication.AuthenticationDetailsSource
@@ -49,6 +50,7 @@ class AutoLoginService implements InitializingBean{
         autoLoginEncrypter.isValidAutoLoginToken(token.autoLoginToken, token.principal)
     }
 
+    @Cacheable(value = "autologin-token", key = "#user.id")
     String generateAutoLogin(User user){
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.username)
         autoLoginEncrypter.encrypt(userDetails)

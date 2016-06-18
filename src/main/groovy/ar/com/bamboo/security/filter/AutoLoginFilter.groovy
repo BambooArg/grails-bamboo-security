@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse
  */
 class AutoLoginFilter extends GenericFilterBean {
 
+    private static final String PARAM_NAME = "autoLogin"
+
     AuthenticationManager authenticationManager
     AutoLoginService autoLoginService
     boolean createSessionOnSuccess = true

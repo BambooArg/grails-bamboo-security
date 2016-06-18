@@ -10,6 +10,7 @@ import ar.com.bamboo.security.exception.RoleNotExistException
 import ar.com.bamboo.security.exception.UserNotExistException
 import grails.core.GrailsApplication
 import grails.gorm.DetachedCriteria
+import grails.plugin.cache.CacheEvict
 import grails.plugin.cache.Cacheable
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
@@ -216,10 +217,11 @@ class UserService extends BaseService{
             throw new BusinessValidator("La contraseña debe ser diferente a la actual.")
         }
 
-        this.changePassword(user, password)
+        grailsApplication.mainContext.userService.changePassword(user, password)
     }
 
     @Transactional
+    @CacheEvict(value = "autologin-token", key = "#user.id")
     User changePassword(User user, String password) {
         user.password = password
         if (!user.save()){
@@ -243,6 +245,7 @@ class UserService extends BaseService{
     }
 
     @Transactional
+    @CacheEvict(value = "autologin-token", key = "#user.id")
     def updateUser(User user) {
         if (!super.save(user.person)){
             throw new ValidatorException<Person>(model: user.person)
